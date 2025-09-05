@@ -41,7 +41,7 @@
         .bg-primary { background-color: var(--primary-color); }
         .text-primary { color: var(--primary-color); }
         .hover\:bg-accent:hover { background-color: var(--accent-color); }
-        .hover\:text-primary:hover { color: var(--primary-color); } /* Updated hover color */
+        .hover\:text-primary:hover { color: var(--primary-color); }
         .hover\:text-accent:hover { color: var(--accent-color); }
         .focus\:ring-primary:focus { ring-color: var(--primary-color); }
 
@@ -67,64 +67,115 @@
             transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, padding 0.3s ease-in-out;
         }
 
-        /* Custom gradient for hero (from version 1) */
+        /* Custom gradient for hero - improved for mobile */
         .hero-gradient {
-             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('https://placehold.co/1920x1080/1a1a1a/f0f0f0?text=Our+Story');
-             background-size: cover;
-             background-position: center;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('https://placehold.co/1920x1080/1a1a1a/f0f0f0?text=Our+Story');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Mobile fix for background attachment */
+        @media (max-width: 768px) {
+            .hero-gradient {
+                background-attachment: scroll;
+                min-height: 100vh;
+            }
         }
 
         .gallery-item:hover .gallery-overlay {
             opacity: 1;
         }
 
-        /* Timeline Styles */
+        /* Timeline Styles - Fully responsive */
         .timeline {
             position: relative;
             max-width: 1200px;
             margin: 0 auto;
         }
-        .timeline::after {
-            content: '';
-            position: absolute;
-            width: 6px;
-            background-color: var(--primary-color);
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -3px;
-            border-radius: 3px;
+
+        /* Desktop timeline */
+        @media screen and (min-width: 769px) {
+            .timeline::after {
+                content: '';
+                position: absolute;
+                width: 6px;
+                background-color: var(--primary-color);
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                margin-left: -3px;
+                border-radius: 3px;
+            }
+            .timeline-item {
+                padding: 10px 40px;
+                position: relative;
+                background-color: inherit;
+                width: 50%;
+            }
+            .timeline-item.left {
+                left: 0;
+            }
+            .timeline-item.right {
+                left: 50%;
+            }
+            .timeline-item::after {
+                content: '';
+                position: absolute;
+                width: 25px;
+                height: 25px;
+                right: -13px;
+                background-color: white;
+                border: 4px solid var(--primary-color);
+                top: 15px;
+                border-radius: 50%;
+                z-index: 1;
+            }
+            .timeline-item.left::after {
+                right: -13px;
+            }
+            .timeline-item.right::after {
+                left: -12px;
+            }
         }
-        .timeline-item {
-            padding: 10px 40px;
-            position: relative;
-            background-color: inherit;
-            width: 50%;
+
+        /* Mobile timeline */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                content: '';
+                position: absolute;
+                width: 4px;
+                background-color: var(--primary-color);
+                top: 0;
+                bottom: 0;
+                left: 20px;
+                border-radius: 2px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 15px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                position: relative;
+            }
+            .timeline-item.left, .timeline-item.right {
+                left: 0%;
+            }
+            .timeline-item::after {
+                content: '';
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                left: 10px;
+                background-color: white;
+                border: 3px solid var(--primary-color);
+                top: 15px;
+                border-radius: 50%;
+                z-index: 1;
+            }
         }
-        .timeline-item.left {
-            left: 0;
-        }
-        .timeline-item.right {
-            left: 50%;
-        }
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            right: -13px;
-            background-color: white;
-            border: 4px solid var(--primary-color);
-            top: 15px;
-            border-radius: 50%;
-            z-index: 1;
-        }
-        .timeline-item.left::after {
-            right: -13px;
-        }
-        .timeline-item.right::after {
-            left: -12px;
-        }
+
         .timeline-content {
             padding: 20px 30px;
             background-color: white;
@@ -132,33 +183,81 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
         @media screen and (max-width: 768px) {
-            .timeline::after {
-                left: 31px;
-            }
-            .timeline-item {
-                width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
-            }
-            .timeline-item.left, .timeline-item.right {
-                left: 0%;
-            }
-            .timeline-item.right::after, .timeline-item.left::after {
-                left: 18px;
-            }
             .timeline-content {
                 padding: 15px 20px;
             }
         }
 
-        /* Scroll to top button */
+        /* Scroll to top button - mobile friendly */
         #scrollTopBtn {
             position: fixed;
             bottom: 20px;
             right: 20px;
             display: none;
             z-index: 100;
+        }
+
+        /* Mobile menu improvements */
+        .mobile-menu-transition {
+            transition: all 0.3s ease-in-out;
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+
+        .mobile-menu-transition.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Ensure proper touch targets on mobile */
+        @media (max-width: 768px) {
+            button, a {
+                min-height: 44px;
+                min-width: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-link, .nav-link-button {
+                padding: 12px 16px;
+            }
+        }
+
+        /* Fix hero text sizing for mobile */
+        @media (max-width: 640px) {
+            .hero-text {
+                font-size: 2.5rem;
+                line-height: 1.1;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 768px) {
+            .hero-text {
+                font-size: 3.5rem;
+                line-height: 1.1;
+            }
+        }
+
+        /* Improve gallery hover on mobile */
+        @media (max-width: 768px) {
+            .gallery-overlay {
+                opacity: 0.8;
+            }
+            
+            .gallery-item {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Form improvements for mobile */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
         }
     </style>
 </head>
@@ -167,84 +266,83 @@
     <!-- Header Section -->
     <header id="header" class="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 lg:px-8">
         <nav class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-display font-bold text-white" id="brand-name">S & J</a>
-            <div class="hidden md:flex items-center space-x-8">
+            <a href="#" class="text-xl sm:text-2xl font-display font-bold text-white" id="brand-name">S & J</a>
+            <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
                 <a href="#our-story" class="nav-link text-white hover:text-primary transition duration-300">Our Story</a>
                 <a href="#moments" class="nav-link text-white hover:text-primary transition duration-300">Moments</a>
                 <a href="#gallery" class="nav-link text-white hover:text-primary transition duration-300">Gallery</a>
                 <a href="#contact" class="nav-link-button text-white bg-primary hover:bg-accent px-4 py-2 rounded-full transition duration-300">Send a Note</a>
             </div>
             <!-- Mobile Menu Button with Accessibility attributes -->
-            <button id="mobile-menu-button" class="md:hidden text-white" aria-controls="mobile-menu" aria-expanded="false">
-                <i data-feather="menu"></i>
+            <button id="mobile-menu-button" class="md:hidden text-white p-2" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle mobile menu">
+                <i data-feather="menu" class="w-6 h-6"></i>
             </button>
         </nav>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden mt-4 bg-white/10 backdrop-blur-md rounded-lg p-4">
-              <a href="#our-story" class="block text-white py-2 hover:text-primary">Our Story</a>
-              <a href="#moments" class="block text-white py-2 hover:text-primary">Moments</a>
-              <a href="#gallery" class="block text-white py-2 hover:text-primary">Gallery</a>
-              <a href="#contact" class="block text-white py-2 mt-2 bg-primary text-center rounded-full">Send a Note</a>
+        <div id="mobile-menu" class="hidden md:hidden mt-4 bg-white/10 backdrop-blur-md rounded-lg p-4 mobile-menu-transition">
+            <a href="#our-story" class="block text-white py-3 px-4 hover:text-primary transition rounded">Our Story</a>
+            <a href="#moments" class="block text-white py-3 px-4 hover:text-primary transition rounded">Moments</a>
+            <a href="#gallery" class="block text-white py-3 px-4 hover:text-primary transition rounded">Gallery</a>
+            <a href="#contact" class="block text-white py-3 px-4 mt-2 bg-primary text-center rounded-full hover:bg-accent transition">Send a Note</a>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section (from version 1) -->
+        <!-- Hero Section -->
         <section class="min-h-screen flex items-center justify-center hero-gradient">
-            <div class="text-center text-white p-4">
-                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display leading-tight mb-4">sakshamLOvejiya</h1>
-                <p class="text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto">Crafting beautiful moments and timeless memories. Welcome to our story.</p>
+            <div class="text-center text-white p-4 px-6 max-w-4xl mx-auto">
+                <h1 class="hero-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display leading-tight mb-4 sm:mb-6">sakshamLOvejiya</h1>
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl font-light max-w-2xl mx-auto leading-relaxed">Crafting beautiful moments and timeless memories. Welcome to our story.</p>
             </div>
         </section>
 
         <!-- Our Story Section -->
-        <section id="our-story" class="py-16 sm:py-24 md:py-32 bg-white">
-            <div class="container mx-auto px-6 lg:px-8">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="observe">
-                        <!-- SUGGESTION: Replace this with a real photo of Saksham and Jiya! -->
-                        <img src="1757066741682-1344efb0-8675-46a9-aa30-360d790b41a1.png" alt="A photo of Saksham and Jiya" class="rounded-lg shadow-2xl w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x750/e0e0e0/333?text=Image+Not+Found'">
+        <section id="our-story" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
+                    <div class="observe order-2 md:order-1">
+                        <img src="1757066741682-1344efb0-8675-46a9-aa30-360d790b41a1.png" alt="A photo of Saksham and Jiya" class="rounded-lg shadow-2xl w-full h-auto object-cover max-h-96 md:max-h-none" onerror="this.src='https://placehold.co/600x750/e0e0e0/333?text=Image+Not+Found'">
                     </div>
-                    <div class="observe">
-                         <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-6">A Journey of<br>Togetherness</h2>
-                        <p class="text-gray-600 mb-4 leading-relaxed">Our story isn't just a sequence of events; it's a collection of shared dreams, laughter, and support. It began with a simple hello and blossomed into a bond built on love, trust, and endless inside jokes.</p>
-                        <p class="text-gray-600 mb-8 leading-relaxed">Every moment, from quiet evenings to grand adventures, has added a beautiful note to the melody of our life together. This is a celebration of that journey.</p>
-                        <a href="#gallery" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">See Our Moments</a>
+                    <div class="observe order-1 md:order-2">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4 sm:mb-6 leading-tight">A Journey of<br>Togetherness</h2>
+                        <p class="text-gray-600 mb-4 leading-relaxed text-sm sm:text-base">Our story isn't just a sequence of events; it's a collection of shared dreams, laughter, and support. It began with a simple hello and blossomed into a bond built on love, trust, and endless inside jokes.</p>
+                        <p class="text-gray-600 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">Every moment, from quiet evenings to grand adventures, has added a beautiful note to the melody of our life together. This is a celebration of that journey.</p>
+                        <a href="#gallery" class="inline-block bg-gray-800 text-white px-6 sm:px-8 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-base sm:text-lg">See Our Moments</a>
                     </div>
                 </div>
             </div>
         </section>
 
-         <!-- Our Timeline Section -->
-        <section id="timeline" class="py-16 sm:py-24 md:py-32">
-            <div class="container mx-auto px-6 lg:px-8">
-                <div class="text-center mb-20">
-                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Timeline</h2>
-                     <p class="text-gray-600 max-w-2xl mx-auto">The milestones that marked our journey of love.</p>
+        <!-- Our Timeline Section -->
+        <section id="timeline" class="py-12 sm:py-16 md:py-24 lg:py-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Timeline</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">The milestones that marked our journey of love.</p>
                 </div>
                 <div class="timeline">
                     <div class="timeline-item left observe">
                         <div class="timeline-content">
-                             <h3 class="text-2xl font-bold font-display text-primary mb-2">The First Hello</h3>
-                            <p class="text-gray-600">Where it all began. A simple moment that kickstarted our forever story.</p>
+                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">The First Hello</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">Where it all began. A simple moment that kickstarted our forever story.</p>
                         </div>
                     </div>
                     <div class="timeline-item right observe">
                         <div class="timeline-content">
-                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Our First Date</h3>
-                            <p class="text-gray-600">Nervous laughter, endless conversation, and the undeniable spark that we both felt.</p>
+                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Our First Date</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">Nervous laughter, endless conversation, and the undeniable spark that we both felt.</p>
                         </div>
                     </div>
                     <div class="timeline-item left observe">
                         <div class="timeline-content">
-                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Became Official</h3>
-                            <p class="text-gray-600">The day we decided to walk hand-in-hand, officially starting our journey as a couple.</p>
+                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Became Official</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">The day we decided to walk hand-in-hand, officially starting our journey as a couple.</p>
                         </div>
                     </div>
-                     <div class="timeline-item right observe">
+                    <div class="timeline-item right observe">
                         <div class="timeline-content">
-                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Our Future</h3>
-                            <p class="text-gray-600">Building our dreams together, one beautiful day at a time. The best is yet to come.</p>
+                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Our Future</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">Building our dreams together, one beautiful day at a time. The best is yet to come.</p>
                         </div>
                     </div>
                 </div>
@@ -252,116 +350,163 @@
         </section>
 
         <!-- Moments/Passions Section -->
-        <section id="moments" class="py-16 sm:py-24 md:py-32 bg-white">
-            <div class="container mx-auto px-6 lg:px-8 text-center">
-                <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Favorite Things</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-12">Life is made of small, beautiful moments. Here are a few things we love to do together.</p>
-                <div class="grid md:grid-cols-3 gap-8">
+        <section id="moments" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Favorite Things</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">Life is made of small, beautiful moments. Here are a few things we love to do together.</p>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                     <!-- Moment 1 -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                         <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="map-pin" class="w-10 h-10 text-primary"></i>
+                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
+                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                            <i data-feather="map-pin" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-3">Exploring Together</h3>
-                         <p class="text-gray-600">Finding new places, whether it's a hidden cafe or a mountain top.</p>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Exploring Together</h3>
+                        <p class="text-gray-600 text-sm sm:text-base">Finding new places, whether it's a hidden cafe or a mountain top.</p>
                     </div>
                     <!-- Moment 2 -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="film" class="w-10 h-10 text-primary"></i>
+                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
+                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                            <i data-feather="film" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
                         </div>
-                         <h3 class="text-2xl font-bold mb-3">Movie Nights</h3>
-                        <p class="text-gray-600">Cuddled up on the couch with popcorn and our favorite films.</p>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Movie Nights</h3>
+                        <p class="text-gray-600 text-sm sm:text-base">Cuddled up on the couch with popcorn and our favorite films.</p>
                     </div>
                     <!-- Moment 3 -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="coffee" class="w-10 h-10 text-primary"></i>
-                         </div>
-                        <h3 class="text-2xl font-bold mb-3">Late Night Talks</h3>
-                        <p class="text-gray-600">Sharing dreams and silly stories over a cup of coffee or tea.</p>
+                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300 sm:col-span-2 lg:col-span-1">
+                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                            <i data-feather="coffee" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Late Night Talks</h3>
+                        <p class="text-gray-600 text-sm sm:text-base">Sharing dreams and silly stories over a cup of coffee or tea.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Gallery Section -->
-        <section id="gallery" class="py-16 sm:py-24 md:py-32 bg-white">
-            <div class="container mx-auto px-6 lg:px-8">
-                <div class="text-center mb-12">
-                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Gallery</h2>
-                     <p class="text-gray-600 max-w-2xl mx-auto">A collection of moments that make us smile.</p>
+        <section id="gallery" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-8 sm:mb-12">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Gallery</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">A collection of moments that make us smile.</p>
                 </div>
-                <!-- TODO: Replace these placeholder images with your actual photos! -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/E3B0A4/FFF?text=Our+Trip" alt="Photo from our trip" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">The Adventure Begins</p></div></div>
-                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/C89B7B/FFF?text=Anniversary" alt="Anniversary celebration" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Celebrating Us</p></div></div>
+                
+                <!-- Mobile-first gallery grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div class="grid gap-3 sm:gap-4">
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/E3B0A4/FFF?text=Our+Trip" alt="Photo from our trip" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">The Adventure Begins</p>
+                            </div>
+                        </div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/C89B7B/FFF?text=Anniversary" alt="Anniversary celebration" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Celebrating Us</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid gap-4">
-                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/d1aaa1/FFF?text=Candid+Moment" alt="A candid moment" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Pure Happiness</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/bfa293/FFF?text=Favorite+Cafe" alt="Our favorite cafe" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Coffee Dates</p></div></div>
+                    <div class="grid gap-3 sm:gap-4">
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/d1aaa1/FFF?text=Candid+Moment" alt="A candid moment" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Pure Happiness</p>
+                            </div>
+                        </div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/bfa293/FFF?text=Favorite+Cafe" alt="Our favorite cafe" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Coffee Dates</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/D3B8AE/FFF?text=Sunset" alt="Watching the sunset" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Golden Hour</p></div></div>
-                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/bfaea9/FFF?text=Just+Us" alt="A photo of just us" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Just Us</p></div></div>
+                    <div class="grid gap-3 sm:gap-4">
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/D3B8AE/FFF?text=Sunset" alt="Watching the sunset" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Golden Hour</p>
+                            </div>
+                        </div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/bfaea9/FFF?text=Just+Us" alt="A photo of just us" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Just Us</p>
+                            </div>
+                        </div>
                     </div>
-                     <div class="grid gap-4">
-                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/ad948b/FFF?text=Silly+Faces" alt="Making silly faces" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Never a Dull Moment</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/c7b2a9/FFF?text=Our+Future" alt="Looking towards the future" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">To Forever</p></div></div>
+                    <div class="grid gap-3 sm:gap-4">
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/ad948b/FFF?text=Silly+Faces" alt="Making silly faces" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">Never a Dull Moment</p>
+                            </div>
+                        </div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
+                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/c7b2a9/FFF?text=Our+Future" alt="Looking towards the future" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
+                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p class="text-white text-base sm:text-lg px-4 text-center">To Forever</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="py-16 sm:py-24 md:py-32">
-            <div class="container mx-auto px-6 lg:px-8">
-                  <div class="text-center mb-12">
-                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Send Us a Note</h2>
-                     <p class="text-gray-600 max-w-2xl mx-auto">We'd love to hear from our friends and family. Leave us a message!</p>
-                 </div>
-                 <div class="max-w-3xl mx-auto">
-                     <form action="#" method="POST" class="bg-white p-8 md:p-12 rounded-lg shadow-lg observe">
-                         <div class="grid md:grid-cols-2 gap-6 mb-6">
-                              <div>
-                                 <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
-                                 <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required>
-                              </div>
-                             <div>
-                                  <label for="email" class="block text-gray-700 font-medium mb-2">Your Email</label>
-                                 <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required>
-                             </div>
-                         </div>
-                         <div class="mb-6">
-                             <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                             <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required></textarea>
-                         </div>
-                         <div class="text-center">
-                             <button type="submit" class="bg-gray-800 text-white px-10 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">Send Message</button>
-                         </div>
-                     </form>
-                 </div>
+        <section id="contact" class="py-12 sm:py-16 md:py-24 lg:py-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-8 sm:mb-12">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Send Us a Note</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">We'd love to hear from our friends and family. Leave us a message!</p>
+                </div>
+                <div class="max-w-3xl mx-auto">
+                    <div class="bg-white p-6 sm:p-8 md:p-12 rounded-lg shadow-lg observe form-container">
+                        <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                            <div>
+                                <label for="name" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Your Name</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base" required>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Your Email</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base" required>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base resize-vertical" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="bg-gray-800 text-white px-8 sm:px-10 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-base sm:text-lg w-full sm:w-auto">Send Message</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
     
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6 lg:px-8 text-center">
-            <p class="text-3xl font-display mb-4">Saksham & Jiya</p>
-            <div class="flex justify-center space-x-6 mb-6">
-                 <a href="#" class="hover:text-primary transition"><i data-feather="instagram"></i></a>
-                 <a href="#" class="hover:text-primary transition"><i data-feather="facebook"></i></a>
-                 <a href="#" class="hover:text-primary transition"><i data-feather="twitter"></i></a>
+    <footer class="bg-gray-900 text-white py-8 sm:py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-2xl sm:text-3xl font-display mb-4">Saksham & Jiya</p>
+            <div class="flex justify-center space-x-6 mb-4 sm:mb-6">
+                <a href="#" class="hover:text-primary transition p-2" aria-label="Instagram">
+                    <i data-feather="instagram" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </a>
+                <a href="#" class="hover:text-primary transition p-2" aria-label="Facebook">
+                    <i data-feather="facebook" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </a>
+                <a href="#" class="hover:text-primary transition p-2" aria-label="Twitter">
+                    <i data-feather="twitter" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </a>
             </div>
-            <p class="text-gray-400">&copy; <span id="year"></span> Saksham & Jiya. With love, forever and always.</p>
+            <p class="text-gray-400 text-sm sm:text-base">&copy; <span id="year"></span> Saksham & Jiya. With love, forever and always.</p>
         </div>
     </footer>
 
     <!-- Scroll to Top Button -->
-    <button id="scrollTopBtn" title="Go to top" class="bg-primary hover:bg-accent text-white p-3 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110">
-        <i data-feather="arrow-up" class="w-6 h-6"></i>
+    <button id="scrollTopBtn" title="Go to top" class="bg-primary hover:bg-accent text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110" aria-label="Scroll to top">
+        <i data-feather="arrow-up" class="w-5 h-5 sm:w-6 sm:h-6"></i>
     </button>
 
     <script>
@@ -371,14 +516,15 @@
         // Set current year in footer
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // --- More Efficient Header Scroll Effect ---
+        // --- Enhanced Header Scroll Effect ---
         const header = document.getElementById('header');
         const navLinks = header.querySelectorAll('.nav-link');
         const navLinkButton = header.querySelector('.nav-link-button');
         const brandName = header.querySelector('#brand-name');
         const mobileMenuIcon = header.querySelector('#mobile-menu-button');
+        let ticking = false;
 
-        window.addEventListener('scroll', () => {
+        function updateHeader() {
             const isScrolled = window.scrollY > 50;
             header.classList.toggle('bg-white', isScrolled);
             header.classList.toggle('shadow-lg', isScrolled);
@@ -394,39 +540,119 @@
             navLinks.forEach(link => {
                 link.classList.toggle('text-white', !isScrolled);
                 link.classList.toggle('text-gray-800', isScrolled);
-                link.classList.toggle('hover:text-primary', !isScrolled);
-                link.classList.toggle('hover:text-accent', isScrolled);
             });
 
-            // Special handling for the button to maintain its background
-            navLinkButton.classList.toggle('text-white', !isScrolled);
-            navLinkButton.classList.toggle('text-white', isScrolled); // Keep text white
-        });
+            // Keep button text white always
+            navLinkButton.classList.add('text-white');
+            ticking = false;
+        }
 
-        // --- Mobile Menu Toggle with Accessibility ---
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // --- Enhanced Mobile Menu Toggle ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         
         mobileMenuButton.addEventListener('click', () => {
-            const isExpanded = mobileMenu.classList.toggle('hidden');
-            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
-        });
-
-        // --- Scroll to Top Button Logic ---
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-
-        window.onscroll = function() {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                scrollTopBtn.style.display = "block";
+            const isHidden = mobileMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                // Force reflow
+                mobileMenu.offsetHeight;
+                mobileMenu.classList.add('show');
             } else {
-                scrollTopBtn.style.display = "none";
+                mobileMenu.classList.remove('show');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
             }
-        };
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            
+            mobileMenuButton.setAttribute('aria-expanded', isHidden);
+            
+            // Update icon
+            const icon = mobileMenuButton.querySelector('i');
+            if (isHidden) {
+                icon.setAttribute('data-feather', 'x');
+            } else {
+                icon.setAttribute('data-feather', 'menu');
+            }
+            feather.replace();
         });
 
-        // --- Intersection Observer for Fade-in Animations (already good!) ---
+        // Close mobile menu when clicking on links
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('show');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+                
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                
+                const icon = mobileMenuButton.querySelector('i');
+                icon.setAttribute('data-feather', 'menu');
+                feather.replace();
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!header.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('show');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                }, 300);
+                
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                
+                const icon = mobileMenuButton.querySelector('i');
+                icon.setAttribute('data-feather', 'menu');
+                feather.replace();
+            }
+        });
+
+        // --- Enhanced Scroll to Top Button ---
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        let scrollTimeout;
+
+        function handleScroll() {
+            clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(() => {
+                const scrolled = document.documentElement.scrollTop || document.body.scrollTop;
+                
+                if (scrolled > 300) {
+                    scrollTopBtn.style.display = "block";
+                } else {
+                    scrollTopBtn.style.display = "none";
+                }
+            }, 10);
+        }
+
+        window.addEventListener('scroll', handleScroll);
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // --- Enhanced Intersection Observer ---
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -434,12 +660,105 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, observerOptions);
 
         document.querySelectorAll('.observe').forEach(el => {
             observer.observe(el);
         });
+
+        // --- Smooth scroll for navigation links ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80; // Account for fixed header
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // --- Form submission handling ---
+        const contactForm = document.querySelector('#contact form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                const name = formData.get('name');
+                const email = formData.get('email');
+                const message = formData.get('message');
+                
+                // Simple validation
+                if (!name || !email || !message) {
+                    alert('Please fill in all fields.');
+                    return;
+                }
+                
+                // Here you would typically send the form data to a server
+                alert('Thank you for your message! We\'ll get back to you soon. ❤️');
+                
+                // Reset form
+                this.reset();
+            });
+        }
+
+        // --- Lazy loading for images ---
+        const images = document.querySelectorAll('img');
+        
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => {
+            if (img.dataset.src) {
+                imageObserver.observe(img);
+            }
+        });
+
+        // --- Performance optimization: Debounced resize handler ---
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Reinitialize any size-dependent features if needed
+                feather.replace();
+            }, 250);
+        });
+
+        // --- Touch-friendly hover effects on mobile ---
+        if ('ontouchstart' in window) {
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                item.addEventListener('touchstart', function() {
+                    const overlay = this.querySelector('.gallery-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '1';
+                    }
+                });
+                
+                item.addEventListener('touchend', function() {
+                    const overlay = this.querySelector('.gallery-overlay');
+                    if (overlay) {
+                        setTimeout(() => {
+                            overlay.style.opacity = '0';
+                        }, 2000);
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>
-
