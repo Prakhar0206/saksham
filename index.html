@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sakshamLOvejiya | Creative Studio</title>
+    <!-- Updated title and added a romantic favicon -->
+    <title>Saksham & Jiya | Our Story</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter and a display font (e.g., Playfair Display) -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
-    <!-- Feather Icons for minimalist icons -->
+    <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
-        /* Custom CSS for typography, animations, and color palette */
+        /* A warmer, more romantic color palette */
         :root {
-            --bg-color: #f8f7f4;
-            --text-color: #333;
-            --primary-color: #d4af37; /* A soft gold */
-            --secondary-color: #c0c0c0; /* A soft silver */
-            --accent-color: #b08d57;
+            --bg-color: #FFF8F0; /* Creamy white */
+            --text-color: #4A4A4A; /* Soft black */
+            --primary-color: #E3B0A4; /* Dusty Rose */
+            --accent-color: #C89B7B; /* Warm Tan */
         }
 
         body {
@@ -35,6 +36,14 @@
         .font-display {
             font-family: 'Playfair Display', serif;
         }
+        
+        /* Custom colors for Tailwind */
+        .bg-primary { background-color: var(--primary-color); }
+        .text-primary { color: var(--primary-color); }
+        .hover\:bg-accent:hover { background-color: var(--accent-color); }
+        .hover\:text-primary:hover { color: var(--primary-color); } /* Updated hover color */
+        .hover\:text-accent:hover { color: var(--accent-color); }
+        .focus\:ring-primary:focus { ring-color: var(--primary-color); }
 
         /* Animation for elements fading in on scroll */
         @keyframes fadeIn {
@@ -55,10 +64,10 @@
         
         /* Smooth transition for header background */
         header {
-            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, padding 0.3s ease-in-out;
         }
 
-        /* Custom gradient for hero */
+        /* Custom gradient for hero (from version 1) */
         .hero-gradient {
              background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('https://placehold.co/1920x1080/1a1a1a/f0f0f0?text=Our+Story');
              background-size: cover;
@@ -68,6 +77,86 @@
         .gallery-item:hover .gallery-overlay {
             opacity: 1;
         }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-item.left {
+            left: 0;
+        }
+        .timeline-item.right {
+            left: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -13px;
+            background-color: white;
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .timeline-item.left::after {
+            right: -13px;
+        }
+        .timeline-item.right::after {
+            left: -12px;
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item.left, .timeline-item.right {
+                left: 0%;
+            }
+            .timeline-item.right::after, .timeline-item.left::after {
+                left: 18px;
+            }
+        }
+
+        /* Scroll to top button */
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 100;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -75,29 +164,29 @@
     <!-- Header Section -->
     <header id="header" class="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 lg:px-8">
         <nav class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-display font-bold text-white" id="brand-name">sakshamLOvejiya</a>
+            <a href="#" class="text-2xl font-display font-bold text-white" id="brand-name">S & J</a>
             <div class="hidden md:flex items-center space-x-8">
-                <a href="#about" class="text-white hover:text-yellow-300 transition duration-300">About</a>
-                <a href="#services" class="text-white hover:text-yellow-300 transition duration-300">Work</a>
-                <a href="#gallery" class="text-white hover:text-yellow-300 transition duration-300">Gallery</a>
-                <a href="#contact" class="text-white bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-full transition duration-300">Contact</a>
+                <a href="#our-story" class="nav-link text-white hover:text-primary transition duration-300">Our Story</a>
+                <a href="#moments" class="nav-link text-white hover:text-primary transition duration-300">Moments</a>
+                <a href="#gallery" class="nav-link text-white hover:text-primary transition duration-300">Gallery</a>
+                <a href="#contact" class="nav-link-button text-white bg-primary hover:bg-accent px-4 py-2 rounded-full transition duration-300">Send a Note</a>
             </div>
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden text-white">
+            <!-- Mobile Menu Button with Accessibility attributes -->
+            <button id="mobile-menu-button" class="md:hidden text-white" aria-controls="mobile-menu" aria-expanded="false">
                 <i data-feather="menu"></i>
             </button>
         </nav>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden mt-4 bg-white/10 backdrop-blur-md rounded-lg p-4">
-             <a href="#about" class="block text-white py-2 hover:text-yellow-300">About</a>
-             <a href="#services" class="block text-white py-2 hover:text-yellow-300">Work</a>
-             <a href="#gallery" class="block text-white py-2 hover:text-yellow-300">Gallery</a>
-             <a href="#contact" class="block text-white py-2 mt-2 bg-yellow-500 text-center rounded-full">Contact</a>
+              <a href="#our-story" class="block text-white py-2 hover:text-primary">Our Story</a>
+              <a href="#moments" class="block text-white py-2 hover:text-primary">Moments</a>
+              <a href="#gallery" class="block text-white py-2 hover:text-primary">Gallery</a>
+              <a href="#contact" class="block text-white py-2 mt-2 bg-primary text-center rounded-full">Send a Note</a>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
+        <!-- Hero Section (from version 1) -->
         <section class="min-h-screen flex items-center justify-center hero-gradient">
             <div class="text-center text-white p-4">
                 <h1 class="text-5xl md:text-8xl font-display leading-tight mb-4">sakshamLOvejiya</h1>
@@ -105,52 +194,89 @@
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="py-20 md:py-32 bg-white">
+        <!-- Our Story Section -->
+        <section id="our-story" class="py-20 md:py-32 bg-white">
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div class="observe">
-                        <img src="https://placehold.co/600x750/e0e0e0/333?text=S+%26+J" alt="About sakshamLOvejiya" class="rounded-lg shadow-2xl w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x750/e0e0e0/333?text=Image+Not+Found'">
+                        <!-- SUGGESTION: Replace this with a real photo of Saksham and Jiya! -->
+                        <img src="1757066741682-1344efb0-8675-46a9-aa30-360d790b41a1.png" alt="A photo of Saksham and Jiya" class="rounded-lg shadow-2xl w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x750/e0e0e0/333?text=Image+Not+Found'">
                     </div>
                     <div class="observe">
-                        <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-6">A Journey of<br>Togetherness</h2>
-                        <p class="text-gray-600 mb-4 leading-relaxed">This is more than just a name; it's a celebration of a shared journey. sakshamLOvejiya represents a bond built on creativity, passion, and a shared vision for creating beautiful things.</p>
-                        <p class="text-gray-600 mb-8 leading-relaxed">From humble beginnings to ambitious projects, every step is a testament to the power of collaboration and love. We believe in telling stories that resonate and crafting experiences that last a lifetime.</p>
-                        <a href="#contact" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">Get In Touch</a>
+                         <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-6">A Journey of<br>Togetherness</h2>
+                        <p class="text-gray-600 mb-4 leading-relaxed">Our story isn't just a sequence of events; it's a collection of shared dreams, laughter, and support. It began with a simple hello and blossomed into a bond built on love, trust, and endless inside jokes.</p>
+                        <p class="text-gray-600 mb-8 leading-relaxed">Every moment, from quiet evenings to grand adventures, has added a beautiful note to the melody of our life together. This is a celebration of that journey.</p>
+                        <a href="#gallery" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">See Our Moments</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Services/Work Section -->
-        <section id="services" class="py-20 md:py-32">
+         <!-- Our Timeline Section -->
+        <section id="timeline" class="py-20 md:py-32">
+            <div class="container mx-auto px-6 lg:px-8">
+                <div class="text-center mb-20">
+                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Timeline</h2>
+                     <p class="text-gray-600 max-w-2xl mx-auto">The milestones that marked our journey of love.</p>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item left observe">
+                        <div class="timeline-content">
+                             <h3 class="text-2xl font-bold font-display text-primary mb-2">The First Hello</h3>
+                            <p class="text-gray-600">Where it all began. A simple moment that kickstarted our forever story.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item right observe">
+                        <div class="timeline-content">
+                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Our First Date</h3>
+                            <p class="text-gray-600">Nervous laughter, endless conversation, and the undeniable spark that we both felt.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item left observe">
+                        <div class="timeline-content">
+                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Became Official</h3>
+                            <p class="text-gray-600">The day we decided to walk hand-in-hand, officially starting our journey as a couple.</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item right observe">
+                        <div class="timeline-content">
+                             <h3 class="text-2xl font-bold font-display text-primary mb-2">Our Future</h3>
+                            <p class="text-gray-600">Building our dreams together, one beautiful day at a time. The best is yet to come.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Moments/Passions Section -->
+        <section id="moments" class="py-20 md:py-32 bg-white">
             <div class="container mx-auto px-6 lg:px-8 text-center">
-                <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Work</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-12">We specialize in turning visions into reality. Here's a glimpse of what we love to do.</p>
+                <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Favorite Things</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-12">Life is made of small, beautiful moments. Here are a few things we love to do together.</p>
                 <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Service 1 -->
+                    <!-- Moment 1 -->
                     <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-yellow-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="camera" class="w-10 h-10 text-yellow-600"></i>
+                         <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <i data-feather="map-pin" class="w-10 h-10 text-primary"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-3">Photography</h3>
-                        <p class="text-gray-600">Capturing life's most precious moments with an artistic and personal touch.</p>
+                        <h3 class="text-2xl font-bold mb-3">Exploring Together</h3>
+                         <p class="text-gray-600">Finding new places, whether it's a hidden cafe or a mountain top.</p>
                     </div>
-                    <!-- Service 2 -->
+                    <!-- Moment 2 -->
                     <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-yellow-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="edit" class="w-10 h-10 text-yellow-600"></i>
+                        <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <i data-feather="film" class="w-10 h-10 text-primary"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-3">Creative Design</h3>
-                        <p class="text-gray-600">From branding to digital art, we create designs that tell your unique story.</p>
+                         <h3 class="text-2xl font-bold mb-3">Movie Nights</h3>
+                        <p class="text-gray-600">Cuddled up on the couch with popcorn and our favorite films.</p>
                     </div>
-                    <!-- Service 3 -->
+                    <!-- Moment 3 -->
                     <div class="bg-white p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-yellow-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                            <i data-feather="calendar" class="w-10 h-10 text-yellow-600"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">Event Planning</h3>
-                        <p class="text-gray-600">Meticulously planning and executing events that leave a lasting impression.</p>
+                        <div class="bg-primary/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                            <i data-feather="coffee" class="w-10 h-10 text-primary"></i>
+                         </div>
+                        <h3 class="text-2xl font-bold mb-3">Late Night Talks</h3>
+                        <p class="text-gray-600">Sharing dreams and silly stories over a cup of coffee or tea.</p>
                     </div>
                 </div>
             </div>
@@ -161,75 +287,79 @@
             <div class="container mx-auto px-6 lg:px-8">
                 <div class="text-center mb-12">
                      <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Gallery</h2>
-                     <p class="text-gray-600 max-w-2xl mx-auto">A collection of moments we've cherished and creations we're proud of.</p>
+                     <p class="text-gray-600 max-w-2xl mx-auto">A collection of moments that make us smile.</p>
                 </div>
+                <!-- TODO: Replace these placeholder images with your actual photos! -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/aaa/fff?text=Moment+1" alt="" onerror="this.src='https://placehold.co/500x700?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Serene Landscapes</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/bbb/fff?text=Moment+2" alt="" onerror="this.src='https://placehold.co/500x400?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Candid Smiles</p></div></div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/E3B0A4/FFF?text=Our+Trip" alt="Photo from our trip" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">The Adventure Begins</p></div></div>
+                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/C89B7B/FFF?text=Anniversary" alt="Anniversary celebration" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Celebrating Us</p></div></div>
                     </div>
                     <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/ccc/fff?text=Moment+3" alt="" onerror="this.src='https://placehold.co/500x400?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Urban Exploration</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/ddd/fff?text=Moment+4" alt="" onerror="this.src='https://placehold.co/500x700?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Detailed Crafts</p></div></div>
+                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/d1aaa1/FFF?text=Candid+Moment" alt="A candid moment" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Pure Happiness</p></div></div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/bfa293/FFF?text=Favorite+Cafe" alt="Our favorite cafe" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Coffee Dates</p></div></div>
                     </div>
                     <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/999/fff?text=Moment+5" alt="" onerror="this.src='https://placehold.co/500x700?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Event Highlights</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/888/fff?text=Moment+6" alt="" onerror="this.src='https://placehold.co/500x400?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Joyful Celebrations</p></div></div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/D3B8AE/FFF?text=Sunset" alt="Watching the sunset" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Golden Hour</p></div></div>
+                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/bfaea9/FFF?text=Just+Us" alt="A photo of just us" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Just Us</p></div></div>
                     </div>
                      <div class="grid gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/777/fff?text=Moment+7" alt="" onerror="this.src='https://placehold.co/500x400?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Nature's Beauty</p></div></div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/666/fff?text=Moment+8" alt="" onerror="this.src='https://placehold.co/500x700?text=Error'"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Artistic Portraits</p></div></div>
+                         <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x400/ad948b/FFF?text=Silly+Faces" alt="Making silly faces" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">Never a Dull Moment</p></div></div>
+                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group"><img class="h-auto max-w-full" src="https://placehold.co/500x700/c7b2a9/FFF?text=Our+Future" alt="Looking towards the future" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';"><div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"><p class="text-white text-lg">To Forever</p></div></div>
                     </div>
                 </div>
             </div>
         </section>
-
 
         <!-- Contact Section -->
         <section id="contact" class="py-20 md:py-32">
             <div class="container mx-auto px-6 lg:px-8">
-                 <div class="text-center mb-12">
-                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Let's Create Together</h2>
-                     <p class="text-gray-600 max-w-2xl mx-auto">Have an idea or a project in mind? We'd love to hear from you.</p>
-                </div>
-                <div class="max-w-3xl mx-auto">
-                    <form action="#" method="POST" class="bg-white p-8 md:p-12 rounded-lg shadow-lg observe">
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                  <div class="text-center mb-12">
+                     <h2 class="text-4xl md:text-5xl font-display text-gray-800 mb-4">Send Us a Note</h2>
+                     <p class="text-gray-600 max-w-2xl mx-auto">We'd love to hear from our friends and family. Leave us a message!</p>
+                 </div>
+                 <div class="max-w-3xl mx-auto">
+                     <form action="#" method="POST" class="bg-white p-8 md:p-12 rounded-lg shadow-lg observe">
+                         <div class="grid md:grid-cols-2 gap-6 mb-6">
+                              <div>
+                                 <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
+                                 <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required>
+                              </div>
                              <div>
-                                <label for="name" class="block text-gray-700 font-medium mb-2">Your Name</label>
-                                <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-gray-700 font-medium mb-2">Your Email</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition">
-                            </div>
-                        </div>
-                        <div class="mb-6">
-                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition"></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="bg-gray-800 text-white px-10 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">Send Message</button>
-                        </div>
-                    </form>
-                </div>
+                                  <label for="email" class="block text-gray-700 font-medium mb-2">Your Email</label>
+                                 <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required>
+                             </div>
+                         </div>
+                         <div class="mb-6">
+                             <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                             <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition" required></textarea>
+                         </div>
+                         <div class="text-center">
+                             <button type="submit" class="bg-gray-800 text-white px-10 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-lg">Send Message</button>
+                         </div>
+                     </form>
+                 </div>
             </div>
         </section>
-
     </main>
     
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6 lg:px-8 text-center">
-            <p class="text-3xl font-display mb-4">sakshamLOvejiya</p>
+            <p class="text-3xl font-display mb-4">Saksham & Jiya</p>
             <div class="flex justify-center space-x-6 mb-6">
-                 <a href="#" class="hover:text-yellow-400 transition"><i data-feather="instagram"></i></a>
-                 <a href="#" class="hover:text-yellow-400 transition"><i data-feather="facebook"></i></a>
-                 <a href="#" class="hover:text-yellow-400 transition"><i data-feather="twitter"></i></a>
+                 <a href="#" class="hover:text-primary transition"><i data-feather="instagram"></i></a>
+                 <a href="#" class="hover:text-primary transition"><i data-feather="facebook"></i></a>
+                 <a href="#" class="hover:text-primary transition"><i data-feather="twitter"></i></a>
             </div>
-            <p class="text-gray-400">&copy; <span id="year"></span> sakshamLOvejiya. All Rights Reserved.</p>
+            <p class="text-gray-400">&copy; <span id="year"></span> Saksham & Jiya. With love, forever and always.</p>
         </div>
     </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollTopBtn" title="Go to top" class="bg-primary hover:bg-accent text-white p-3 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110">
+        <i data-feather="arrow-up" class="w-6 h-6"></i>
+    </button>
 
     <script>
         // Initialize Feather Icons
@@ -238,39 +368,62 @@
         // Set current year in footer
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Header scroll effect
+        // --- More Efficient Header Scroll Effect ---
         const header = document.getElementById('header');
-        const brandName = document.getElementById('brand-name');
+        const navLinks = header.querySelectorAll('.nav-link');
+        const navLinkButton = header.querySelector('.nav-link-button');
+        const brandName = header.querySelector('#brand-name');
+        const mobileMenuIcon = header.querySelector('#mobile-menu-button');
+
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('bg-white', 'shadow-lg');
-                header.classList.remove('py-4');
-                header.classList.add('py-2');
-                // Change nav links color
-                header.querySelectorAll('nav a').forEach(a => a.classList.add('text-gray-800', 'hover:text-yellow-600'));
-                header.querySelectorAll('nav a').forEach(a => a.classList.remove('text-white', 'hover:text-yellow-300'));
-                header.querySelector('button').classList.add('text-gray-800');
-                header.querySelector('button').classList.remove('text-white');
-            } else {
-                header.classList.remove('bg-white', 'shadow-lg');
-                header.classList.remove('py-2');
-                header.classList.add('py-4');
-                 // Revert nav links color
-                header.querySelectorAll('nav a').forEach(a => a.classList.remove('text-gray-800', 'hover:text-yellow-600'));
-                header.querySelectorAll('nav a').forEach(a => a.classList.add('text-white', 'hover:text-yellow-300'));
-                header.querySelector('button').classList.remove('text-gray-800');
-                header.querySelector('button').classList.add('text-white');
-            }
+            const isScrolled = window.scrollY > 50;
+            header.classList.toggle('bg-white', isScrolled);
+            header.classList.toggle('shadow-lg', isScrolled);
+            header.classList.toggle('py-2', isScrolled);
+            header.classList.toggle('py-4', !isScrolled);
+            
+            brandName.classList.toggle('text-white', !isScrolled);
+            brandName.classList.toggle('text-gray-800', isScrolled);
+            
+            mobileMenuIcon.classList.toggle('text-white', !isScrolled);
+            mobileMenuIcon.classList.toggle('text-gray-800', isScrolled);
+
+            navLinks.forEach(link => {
+                link.classList.toggle('text-white', !isScrolled);
+                link.classList.toggle('text-gray-800', isScrolled);
+                link.classList.toggle('hover:text-primary', !isScrolled);
+                link.classList.toggle('hover:text-accent', isScrolled);
+            });
+
+            // Special handling for the button to maintain its background
+            navLinkButton.classList.toggle('text-white', !isScrolled);
+            navLinkButton.classList.toggle('text-white', isScrolled); // Keep text white
         });
 
-        // Mobile menu toggle
+        // --- Mobile Menu Toggle with Accessibility ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
+        
         mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+            const isExpanded = mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
         });
 
-        // Intersection Observer for fade-in animations
+        // --- Scroll to Top Button Logic ---
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        // --- Intersection Observer for Fade-in Animations (already good!) ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -283,7 +436,7 @@
         document.querySelectorAll('.observe').forEach(el => {
             observer.observe(el);
         });
-
     </script>
 </body>
 </html>
+
