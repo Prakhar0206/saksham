@@ -1,764 +1,428 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Updated title and added a romantic favicon -->
-    <title>Saksham & Jiya | Our Story</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
-    
-    <!-- Tailwind CSS -->
+    <title>IELTS Writing Test Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <!-- Feather Icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* A warmer, more romantic color palette */
-        :root {
-            --bg-color: #FFF8F0; /* Creamy white */
-            --text-color: #4A4A4A; /* Soft black */
-            --primary-color: #E3B0A4; /* Dusty Rose */
-            --accent-color: #C89B7B; /* Warm Tan */
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #f0f2f5; /* A more neutral, professional background */
+            /* FIX: Removed user-select: none to allow users to select prompt text. */
         }
-
-        .font-display {
-            font-family: 'Playfair Display', serif;
+        .ielts-header-blue { background-color: #2b5797; }
+        .ielts-text-blue { color: #2b5797; }
+        
+        /* A more authentic, flat button style */
+        .ielts-button {
+            background-color: #e1e1e1;
+            border: 1px solid #adadad;
+            border-radius: 3px;
+            padding: 5px 12px;
+            font-weight: 500;
+            color: #333;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ielts-button:hover:not(:disabled) {
+            background-color: #d1d1d1;
+        }
+        .ielts-button:disabled {
+            background-color: #f5f5f5;
+            color: #aaa;
+            cursor: not-allowed;
+            border-color: #d1d1d1;
+        }
+        .ielts-button-end {
+            background-color: #d9534f;
+            color: white;
+            border-color: #d43f3a;
+        }
+         .ielts-button-end:hover:not(:disabled) {
+            background-color: #c9302c;
+            border-color: #ac2925;
+         }
+        .ielts-button-end:disabled {
+            background-color: #e2827f;
+            border-color: #dd716e;
+        }
+        textarea:disabled {
+            background-color: #f5f5f5;
         }
         
-        /* Custom colors for Tailwind */
-        .bg-primary { background-color: var(--primary-color); }
-        .text-primary { color: var(--primary-color); }
-        .hover\:bg-accent:hover { background-color: var(--accent-color); }
-        .hover\:text-primary:hover { color: var(--primary-color); }
-        .hover\:text-accent:hover { color: var(--accent-color); }
-        .focus\:ring-primary:focus { ring-color: var(--primary-color); }
-
-        /* Animation for elements fading in on scroll */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-element {
-            animation: fadeIn 0.8s ease-out forwards;
-            opacity: 0;
-        }
+        /* Custom scrollbar for a more authentic feel */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #bdbdbd; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
         
-        /* Smooth transition for header background */
-        header {
-            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, padding 0.3s ease-in-out;
-        }
-
-        /* Custom gradient for hero - improved for mobile */
-        .hero-gradient {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.2)), url('https://placehold.co/1920x1080/1a1a1a/f0f0f0?text=Our+Story');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        /* Mobile fix for background attachment */
-        @media (max-width: 768px) {
-            .hero-gradient {
-                background-attachment: scroll;
-                min-height: 100vh;
-            }
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        /* Timeline Styles - Fully responsive */
-        .timeline {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Desktop timeline */
-        @media screen and (min-width: 769px) {
-            .timeline::after {
-                content: '';
-                position: absolute;
-                width: 6px;
-                background-color: var(--primary-color);
-                top: 0;
-                bottom: 0;
-                left: 50%;
-                margin-left: -3px;
-                border-radius: 3px;
-            }
-            .timeline-item {
-                padding: 10px 40px;
-                position: relative;
-                background-color: inherit;
-                width: 50%;
-            }
-            .timeline-item.left {
-                left: 0;
-            }
-            .timeline-item.right {
-                left: 50%;
-            }
-            .timeline-item::after {
-                content: '';
-                position: absolute;
-                width: 25px;
-                height: 25px;
-                right: -13px;
-                background-color: white;
-                border: 4px solid var(--primary-color);
-                top: 15px;
-                border-radius: 50%;
-                z-index: 1;
-            }
-            .timeline-item.left::after {
-                right: -13px;
-            }
-            .timeline-item.right::after {
-                left: -12px;
-            }
-        }
-
-        /* Mobile timeline */
-        @media screen and (max-width: 768px) {
-            .timeline::after {
-                content: '';
-                position: absolute;
-                width: 4px;
-                background-color: var(--primary-color);
-                top: 0;
-                bottom: 0;
-                left: 20px;
-                border-radius: 2px;
-            }
-            .timeline-item {
-                width: 100%;
-                padding-left: 50px;
-                padding-right: 15px;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                position: relative;
-            }
-            .timeline-item.left, .timeline-item.right {
-                left: 0%;
-            }
-            .timeline-item::after {
-                content: '';
-                position: absolute;
-                width: 20px;
-                height: 20px;
-                left: 10px;
-                background-color: white;
-                border: 3px solid var(--primary-color);
-                top: 15px;
-                border-radius: 50%;
-                z-index: 1;
-            }
-        }
-
-        .timeline-content {
-            padding: 20px 30px;
-            background-color: white;
-            position: relative;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        @media screen and (max-width: 768px) {
-            .timeline-content {
-                padding: 15px 20px;
-            }
-        }
-
-        /* Scroll to top button - mobile friendly */
-        #scrollTopBtn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-            z-index: 100;
-        }
-
-        /* Mobile menu improvements */
-        .mobile-menu-transition {
-            transition: all 0.3s ease-in-out;
-            transform: translateY(-10px);
-            opacity: 0;
-        }
-
-        .mobile-menu-transition.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* Ensure proper touch targets on mobile */
-        @media (max-width: 768px) {
-            button, a {
-                min-height: 44px;
-                min-width: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .nav-link, .nav-link-button {
-                padding: 12px 16px;
-            }
-        }
-
-        /* Fix hero text sizing for mobile */
-        @media (max-width: 640px) {
-            .hero-text {
-                font-size: 2.5rem;
-                line-height: 1.1;
-            }
-        }
-
-        @media (min-width: 641px) and (max-width: 768px) {
-            .hero-text {
-                font-size: 3.5rem;
-                line-height: 1.1;
-            }
-        }
-
-        /* Improve gallery hover on mobile */
-        @media (max-width: 768px) {
-            .gallery-overlay {
-                opacity: 0.8;
-            }
-            
-            .gallery-item {
-                margin-bottom: 1rem;
-            }
-        }
-
-        /* Form improvements for mobile */
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
+        /* Modal styles */
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.6); }
+        .modal-box {
+            width: 90%;
+            max-width: 550px;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="text-gray-900 bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <!-- Header Section -->
-    <header id="header" class="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 lg:px-8">
-        <nav class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-xl sm:text-2xl font-display font-bold text-white" id="brand-name">S & J</a>
-            <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
-                <a href="#our-story" class="nav-link text-white hover:text-primary transition duration-300">Our Story</a>
-                <a href="#moments" class="nav-link text-white hover:text-primary transition duration-300">Moments</a>
-                <a href="#gallery" class="nav-link text-white hover:text-primary transition duration-300">Gallery</a>
-                <a href="#contact" class="nav-link-button text-white bg-primary hover:bg-accent px-4 py-2 rounded-full transition duration-300">Send a Note</a>
+    <!-- Question Setup Screen -->
+    <div id="setupScreen" class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+        <h1 class="text-2xl font-bold text-center mb-6 ielts-text-blue">IELTS Writing Task 2 Simulator Setup</h1>
+        <div class="space-y-4">
+            <div>
+                <label for="promptInput" class="block text-sm font-medium text-gray-700 mb-1">Main Prompt</label>
+                <textarea id="promptInput" rows="4" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Some people believe that unpaid community service should be a compulsory part of high school programmes...">Some people believe that unpaid community service should be a compulsory part of high school programmes (for example, working for a charity, improving the neighbourhood or teaching sports to younger children).</textarea>
             </div>
-            <!-- Mobile Menu Button with Accessibility attributes -->
-            <button id="mobile-menu-button" class="md:hidden text-white p-2" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle mobile menu">
-                <i data-feather="menu" class="w-6 h-6"></i>
+            <div>
+                <label for="questionInput" class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                <input type="text" id="questionInput" class="w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., To what extent do you agree or disagree?" value="To what extent do you agree or disagree?">
+            </div>
+        </div>
+        <div class="mt-8 text-center">
+            <button id="startSimulatorBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-md text-lg transition-all shadow-md hover:shadow-lg">
+                Start Simulator
             </button>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden mt-4 bg-white/10 backdrop-blur-md rounded-lg p-4 mobile-menu-transition">
-            <a href="#our-story" class="block text-white py-3 px-4 hover:text-primary transition rounded">Our Story</a>
-            <a href="#moments" class="block text-white py-3 px-4 hover:text-primary transition rounded">Moments</a>
-            <a href="#gallery" class="block text-white py-3 px-4 hover:text-primary transition rounded">Gallery</a>
-            <a href="#contact" class="block text-white py-3 px-4 mt-2 bg-primary text-center rounded-full hover:bg-accent transition">Send a Note</a>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="min-h-screen flex items-center justify-center hero-gradient">
-            <div class="text-center text-white p-4 px-6 max-w-4xl mx-auto">
-                <h1 class="hero-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display leading-tight mb-4 sm:mb-6">sakshamLOvejiya</h1>
-                <p class="text-sm sm:text-base md:text-lg lg:text-xl font-light max-w-2xl mx-auto leading-relaxed">Crafting beautiful moments and timeless memories. Welcome to our story.</p>
+
+    <!-- Main Application Container -->
+    <div id="app" class="max-w-7xl mx-auto my-4 bg-white shadow-lg rounded-lg border border-gray-300 h-[calc(100vh-2rem)] flex-col hidden">
+        
+        <!-- Header -->
+        <header class="ielts-header-blue text-white flex justify-between items-center p-3 rounded-t-lg flex-shrink-0">
+            <div class="flex items-center gap-4">
+                <div class="font-bold text-lg">IELTS Writing</div>
             </div>
-        </section>
-
-        <!-- Our Story Section -->
-        <section id="our-story" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                    <div class="observe order-2 md:order-1">
-                        <img src="1757066741682-1344efb0-8675-46a9-aa30-360d790b41a1.png" alt="A photo of Saksham and Jiya" class="rounded-lg shadow-2xl w-full h-auto object-cover max-h-96 md:max-h-none" onerror="this.src='https://placehold.co/600x750/e0e0e0/333?text=Image+Not+Found'">
-                    </div>
-                    <div class="observe order-1 md:order-2">
-                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4 sm:mb-6 leading-tight">A Journey of<br>Togetherness</h2>
-                        <p class="text-gray-600 mb-4 leading-relaxed text-sm sm:text-base">Our story isn't just a sequence of events; it's a collection of shared dreams, laughter, and support. It began with a simple hello and blossomed into a bond built on love, trust, and endless inside jokes.</p>
-                        <p class="text-gray-600 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">Every moment, from quiet evenings to grand adventures, has added a beautiful note to the melody of our life together. This is a celebration of that journey.</p>
-                        <a href="#gallery" class="inline-block bg-gray-800 text-white px-6 sm:px-8 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-base sm:text-lg">See Our Moments</a>
-                    </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span id="timer" class="bg-white text-gray-900 border border-gray-400 rounded px-3 py-1 text-lg font-bold tracking-wider">40:00</span>
                 </div>
+                <button id="helpBtn" class="ielts-button !bg-white/20 !text-white !border-white/50 hover:!bg-white/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    Help
+                </button>
+                <button id="endTestBtn" class="ielts-button ielts-button-end">End Test</button>
             </div>
-        </section>
+        </header>
 
-        <!-- Our Timeline Section -->
-        <section id="timeline" class="py-12 sm:py-16 md:py-24 lg:py-32">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 sm:mb-16 lg:mb-20">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Timeline</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">The milestones that marked our journey of love.</p>
+        <!-- Main Content -->
+        <main id="mainContent" class="flex flex-col md:flex-row border-t border-b border-gray-300 flex-grow overflow-y-hidden">
+            
+            <!-- Left Panel: Prompt -->
+            <div id="promptPanel" class="w-full md:w-1/2 border-r border-gray-300 p-4 overflow-y-auto transition-all duration-300">
+                <h2 class="font-bold mb-3 text-lg ielts-text-blue">Writing Task 2</h2>
+                <p class="mb-4 text-sm">You should spend about 40 minutes on this task.</p>
+                <p class="mb-4 text-sm">Write about the following topic:</p>
+                <div class="border p-4 bg-gray-50 rounded-md text-sm">
+                    <p id="promptText" class="font-semibold leading-relaxed"></p>
+                    <p id="questionText" class="mt-3 font-bold"></p>
                 </div>
-                <div class="timeline">
-                    <div class="timeline-item left observe">
-                        <div class="timeline-content">
-                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">The First Hello</h3>
-                            <p class="text-gray-600 text-sm sm:text-base">Where it all began. A simple moment that kickstarted our forever story.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item right observe">
-                        <div class="timeline-content">
-                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Our First Date</h3>
-                            <p class="text-gray-600 text-sm sm:text-base">Nervous laughter, endless conversation, and the undeniable spark that we both felt.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item left observe">
-                        <div class="timeline-content">
-                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Became Official</h3>
-                            <p class="text-gray-600 text-sm sm:text-base">The day we decided to walk hand-in-hand, officially starting our journey as a couple.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item right observe">
-                        <div class="timeline-content">
-                            <h3 class="text-xl sm:text-2xl font-bold font-display text-primary mb-2">Our Future</h3>
-                            <p class="text-gray-600 text-sm sm:text-base">Building our dreams together, one beautiful day at a time. The best is yet to come.</p>
-                        </div>
-                    </div>
-                </div>
+                <p class="mt-4 text-sm">Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p>
+                <p class="mt-4 text-sm">Write at least 250 words.</p>
             </div>
-        </section>
 
-        <!-- Moments/Passions Section -->
-        <section id="moments" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Favorite Things</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base">Life is made of small, beautiful moments. Here are a few things we love to do together.</p>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                    <!-- Moment 1 -->
-                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                            <i data-feather="map-pin" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Exploring Together</h3>
-                        <p class="text-gray-600 text-sm sm:text-base">Finding new places, whether it's a hidden cafe or a mountain top.</p>
-                    </div>
-                    <!-- Moment 2 -->
-                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300">
-                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                            <i data-feather="film" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Movie Nights</h3>
-                        <p class="text-gray-600 text-sm sm:text-base">Cuddled up on the couch with popcorn and our favorite films.</p>
-                    </div>
-                    <!-- Moment 3 -->
-                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center observe hover:-translate-y-2 transition-transform duration-300 sm:col-span-2 lg:col-span-1">
-                        <div class="bg-primary/20 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                            <i data-feather="coffee" class="w-8 h-8 sm:w-10 sm:h-10 text-primary"></i>
-                        </div>
-                        <h3 class="text-xl sm:text-2xl font-bold mb-3">Late Night Talks</h3>
-                        <p class="text-gray-600 text-sm sm:text-base">Sharing dreams and silly stories over a cup of coffee or tea.</p>
-                    </div>
+            <!-- Right Panel: Writing Area -->
+            <div id="writingPanel" class="w-full md:w-1/2 flex flex-col transition-all duration-300 relative">
+                <textarea id="writingArea" class="w-full h-full border-t md:border-t-0 border-gray-300 rounded-none p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow" placeholder="Type your response here..."></textarea>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="flex justify-between items-center p-2 rounded-b-lg bg-gray-100 border-t border-gray-300 flex-shrink-0">
+             <div class="flex items-center space-x-2">
+                 <button id="hideBtn" class="ielts-button text-sm">Hide Prompt</button>
+                 <button id="cutBtn" class="ielts-button">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+                     Cut
+                 </button>
+                 <button id="copyBtn" class="ielts-button">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                     Copy
+                 </button>
+                 <button id="pasteBtn" class="ielts-button">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                     Paste
+                 </button>
+             </div>
+             <div class="text-right font-medium">
+                 Word count: <span id="wordCount" class="font-bold text-lg ielts-text-blue">0</span>
+             </div>
+        </footer>
+        
+        <!-- Review Screen -->
+        <div id="reviewScreen" class="p-6 md:p-8 flex-grow overflow-y-auto hidden">
+            <h2 class="text-3xl font-bold text-center mb-6 ielts-text-blue">Test Completed</h2>
+            <div class="bg-gray-50 p-4 rounded-lg shadow-inner mb-6 flex justify-around text-center">
+                <div>
+                    <p class="text-sm text-gray-600">Time Taken</p>
+                    <p id="reviewTime" class="text-2xl font-bold ielts-text-blue">00:00</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-600">Word Count</p>
+                    <p id="reviewWordCount" class="text-2xl font-bold ielts-text-blue">0</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="py-12 sm:py-16 md:py-24 lg:py-32 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-8 sm:mb-12">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Our Gallery</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">A collection of moments that make us smile.</p>
-                </div>
-                
-                <!-- Mobile-first gallery grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                    <div class="grid gap-3 sm:gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/E3B0A4/FFF?text=Our+Trip" alt="Photo from our trip" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">The Adventure Begins</p>
-                            </div>
-                        </div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/C89B7B/FFF?text=Anniversary" alt="Anniversary celebration" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Celebrating Us</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid gap-3 sm:gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/d1aaa1/FFF?text=Candid+Moment" alt="A candid moment" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Pure Happiness</p>
-                            </div>
-                        </div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/bfa293/FFF?text=Favorite+Cafe" alt="Our favorite cafe" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Coffee Dates</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid gap-3 sm:gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/D3B8AE/FFF?text=Sunset" alt="Watching the sunset" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Golden Hour</p>
-                            </div>
-                        </div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/bfaea9/FFF?text=Just+Us" alt="A photo of just us" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Just Us</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid gap-3 sm:gap-4">
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x400/ad948b/FFF?text=Silly+Faces" alt="Making silly faces" onerror="this.onerror=null;this.src='https://placehold.co/500x400?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">Never a Dull Moment</p>
-                            </div>
-                        </div>
-                        <div class="observe gallery-item relative overflow-hidden rounded-lg shadow-md group">
-                            <img class="h-auto max-w-full w-full object-cover" src="https://placehold.co/500x700/c7b2a9/FFF?text=Our+Future" alt="Looking towards the future" onerror="this.onerror=null;this.src='https://placehold.co/500x700?text=Image+Not+Found';">
-                            <div class="gallery-overlay absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p class="text-white text-base sm:text-lg px-4 text-center">To Forever</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="border p-4 bg-white rounded-md">
+                <h3 class="font-bold mb-3 text-lg text-gray-800">Your Essay:</h3>
+                <div id="reviewEssay" class="whitespace-pre-wrap text-gray-700 leading-relaxed max-h-80 overflow-y-auto bg-gray-50 p-3 rounded"></div>
             </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="py-12 sm:py-16 md:py-24 lg:py-32">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-8 sm:mb-12">
-                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-display text-gray-800 mb-4">Send Us a Note</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">We'd love to hear from our friends and family. Leave us a message!</p>
-                </div>
-                <div class="max-w-3xl mx-auto">
-                    <div class="bg-white p-6 sm:p-8 md:p-12 rounded-lg shadow-lg observe form-container">
-                        <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
-                            <div>
-                                <label for="name" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Your Name</label>
-                                <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base" required>
-                            </div>
-                            <div>
-                                <label for="email" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Your Email</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base" required>
-                            </div>
-                        </div>
-                        <div class="mb-6">
-                            <label for="message" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">Message</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition text-sm sm:text-base resize-vertical" required></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="bg-gray-800 text-white px-8 sm:px-10 py-3 rounded-full hover:bg-gray-900 transition duration-300 text-base sm:text-lg w-full sm:w-auto">Send Message</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="mt-8 text-center">
+                <button id="newTestBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-md text-lg transition-all shadow-md hover:shadow-lg">
+                    Start a New Test
+                </button>
             </div>
-        </section>
-    </main>
+        </div>
+
+    </div>
+
+    <!-- Modals -->
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-overlay fixed inset-0"></div>
+        <div class="modal-box bg-white rounded-lg shadow-xl p-6 relative">
+            <h3 class="text-xl font-bold mb-4 ielts-text-blue">Help Information</h3>
+            <p class="mb-2 text-sm"><strong>Timer:</strong> The test ends automatically when the timer reaches 00:00.</p>
+            <p class="mb-2 text-sm"><strong>Word Count:</strong> The word count updates as you type.</p>
+            <p class="mb-2 text-sm"><strong>Hide/Show Prompt:</strong> Use this to maximize your writing area.</p>
+            <p class="mb-4 text-sm"><strong>Editing:</strong> Use the Cut, Copy, and Paste buttons or standard keyboard shortcuts (Ctrl/Cmd + X/C/V).</p>
+            <div class="text-right mt-6">
+                <button id="closeHelpBtn" class="ielts-button bg-blue-600 text-white border-blue-700 hover:bg-blue-700">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time's Up Modal -->
+    <div id="timesUpModal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-overlay fixed inset-0"></div>
+        <div class="modal-box bg-white rounded-lg shadow-xl p-6 text-center relative">
+            <h3 class="text-xl font-bold mb-4 text-red-600">Time is Up!</h3>
+            <p class="mb-5">Your time for this task has finished. Your answers would now be submitted.</p>
+            <button id="closeTimesUpBtn" class="ielts-button bg-blue-600 text-white border-blue-700 hover:bg-blue-700">Acknowledge</button>
+        </div>
+    </div>
     
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 sm:py-12">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-2xl sm:text-3xl font-display mb-4">Saksham & Jiya</p>
-            <div class="flex justify-center space-x-6 mb-4 sm:mb-6">
-                <a href="#" class="hover:text-primary transition p-2" aria-label="Instagram">
-                    <i data-feather="instagram" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                </a>
-                <a href="#" class="hover:text-primary transition p-2" aria-label="Facebook">
-                    <i data-feather="facebook" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                </a>
-                <a href="#" class="hover:text-primary transition p-2" aria-label="Twitter">
-                    <i data-feather="twitter" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                </a>
+    <!-- End Test Confirmation Modal -->
+    <div id="endTestConfirmModal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-overlay fixed inset-0"></div>
+        <div class="modal-box bg-white rounded-lg shadow-xl p-6 text-center relative">
+            <h3 class="text-xl font-bold mb-4 text-yellow-600">End Test?</h3>
+            <p class="mb-6">Are you sure you want to end the test? You cannot continue once you end it.</p>
+            <div class="flex justify-center gap-4">
+                 <button id="cancelEndTestBtn" class="ielts-button">Cancel</button>
+                 <button id="confirmEndTestBtn" class="ielts-button ielts-button-end">End Test</button>
             </div>
-            <p class="text-gray-400 text-sm sm:text-base">&copy; <span id="year"></span> Saksham & Jiya. With love, forever and always.</p>
         </div>
-    </footer>
-
-    <!-- Scroll to Top Button -->
-    <button id="scrollTopBtn" title="Go to top" class="bg-primary hover:bg-accent text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110" aria-label="Scroll to top">
-        <i data-feather="arrow-up" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-    </button>
+    </div>
 
     <script>
-        // Initialize Feather Icons
-        feather.replace();
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element Selection ---
+            const app = document.getElementById('app');
+            const setupScreen = document.getElementById('setupScreen');
+            const startSimulatorBtn = document.getElementById('startSimulatorBtn');
+            const writingArea = document.getElementById('writingArea');
+            const wordCountEl = document.getElementById('wordCount');
+            const timerEl = document.getElementById('timer');
+            const hideBtn = document.getElementById('hideBtn');
+            const promptPanel = document.getElementById('promptPanel');
+            const writingPanel = document.getElementById('writingPanel');
+            const mainContent = document.getElementById('mainContent');
+            const footer = document.querySelector('footer');
 
-        // Set current year in footer
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // --- Enhanced Header Scroll Effect ---
-        const header = document.getElementById('header');
-        const navLinks = header.querySelectorAll('.nav-link');
-        const navLinkButton = header.querySelector('.nav-link-button');
-        const brandName = header.querySelector('#brand-name');
-        const mobileMenuIcon = header.querySelector('#mobile-menu-button');
-        let ticking = false;
-
-        function updateHeader() {
-            const isScrolled = window.scrollY > 50;
-            header.classList.toggle('bg-white', isScrolled);
-            header.classList.toggle('shadow-lg', isScrolled);
-            header.classList.toggle('py-2', isScrolled);
-            header.classList.toggle('py-4', !isScrolled);
+            // Review Screen elements
+            const reviewScreen = document.getElementById('reviewScreen');
+            const reviewTime = document.getElementById('reviewTime');
+            const reviewWordCount = document.getElementById('reviewWordCount');
+            const reviewEssay = document.getElementById('reviewEssay');
+            const newTestBtn = document.getElementById('newTestBtn');
             
-            brandName.classList.toggle('text-white', !isScrolled);
-            brandName.classList.toggle('text-gray-800', isScrolled);
+            // Buttons
+            const helpBtn = document.getElementById('helpBtn');
+            const endTestBtn = document.getElementById('endTestBtn');
+            const cutBtn = document.getElementById('cutBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const pasteBtn = document.getElementById('pasteBtn');
             
-            mobileMenuIcon.classList.toggle('text-white', !isScrolled);
-            mobileMenuIcon.classList.toggle('text-gray-800', isScrolled);
+            // Modals
+            const helpModal = document.getElementById('helpModal');
+            const timesUpModal = document.getElementById('timesUpModal');
+            const endTestConfirmModal = document.getElementById('endTestConfirmModal');
 
-            navLinks.forEach(link => {
-                link.classList.toggle('text-white', !isScrolled);
-                link.classList.toggle('text-gray-800', isScrolled);
+            // --- State Variables ---
+            let isHidden = false;
+            let timeInSeconds = 40 * 60;
+            let timerInterval = null;
+            let testActive = false;
+
+            // --- Initial Setup ---
+            writingArea.disabled = true;
+            [endTestBtn, cutBtn, copyBtn, pasteBtn, hideBtn, helpBtn].forEach(btn => btn.disabled = true);
+
+            // --- Core Functions ---
+            const updateWordCount = () => {
+                const text = writingArea.value.trim();
+                const words = text === '' ? [] : text.split(/\s+/).filter(word => word.length > 0);
+                wordCountEl.textContent = words.length;
+            };
+
+            const startTimer = () => {
+                if (timerInterval) clearInterval(timerInterval); // Ensure no multiple timers
+                timerInterval = setInterval(() => {
+                    timeInSeconds--;
+                    const minutes = Math.floor(timeInSeconds / 60);
+                    const seconds = timeInSeconds % 60;
+                    timerEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                    if (timeInSeconds <= 0) {
+                        endTest();
+                        showModal(timesUpModal);
+                    } else if (timeInSeconds < 5 * 60 && !timerEl.classList.contains('text-red-500')) {
+                        timerEl.classList.remove('text-gray-900');
+                        timerEl.classList.add('text-red-500', 'font-bold');
+                    }
+                }, 1000);
+            };
+
+            const startTest = () => {
+                testActive = true;
+                writingArea.disabled = false;
+                [endTestBtn, cutBtn, copyBtn, pasteBtn, hideBtn, helpBtn].forEach(btn => btn.disabled = false);
+                writingArea.focus();
+                startTimer();
+                updateWordCount();
+            };
+
+            const endTest = () => {
+                if (!testActive) return;
+                
+                testActive = false;
+                clearInterval(timerInterval);
+                timerInterval = null;
+
+                if (timeInSeconds < 0) timeInSeconds = 0; // Sanitize timer value
+                const timeTakenInSeconds = (40 * 60) - timeInSeconds;
+                const minutesTaken = Math.floor(timeTakenInSeconds / 60);
+                const secondsTaken = timeTakenInSeconds % 60;
+                
+                reviewTime.textContent = `${String(minutesTaken).padStart(2, '0')}:${String(secondsTaken).padStart(2, '0')}`;
+                reviewWordCount.textContent = wordCountEl.textContent;
+                reviewEssay.textContent = writingArea.value;
+
+                mainContent.classList.add('hidden');
+                footer.classList.add('hidden');
+                reviewScreen.classList.remove('hidden');
+
+                writingArea.disabled = true;
+                [endTestBtn, cutBtn, copyBtn, pasteBtn, hideBtn, helpBtn].forEach(btn => btn.disabled = true);
+            };
+
+            // --- Modal Management ---
+            const showModal = (modal) => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+            const hideModal = (modal) => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+            
+            // --- Event Listeners ---
+            startSimulatorBtn.addEventListener('click', () => {
+                const promptValue = document.getElementById('promptInput').value;
+                const questionValue = document.getElementById('questionInput').value;
+                
+                document.getElementById('promptText').innerText = promptValue.trim();
+                document.getElementById('questionText').innerText = questionValue.trim();
+
+                setupScreen.classList.add('hidden');
+                app.classList.remove('hidden');
+                app.classList.add('flex');
+
+                startTest();
             });
 
-            // Keep button text white always
-            navLinkButton.classList.add('text-white');
-            ticking = false;
-        }
-
-        function requestTick() {
-            if (!ticking) {
-                requestAnimationFrame(updateHeader);
-                ticking = true;
-            }
-        }
-
-        window.addEventListener('scroll', requestTick);
-
-        // --- Enhanced Mobile Menu Toggle ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            const isHidden = mobileMenu.classList.contains('hidden');
-            
-            if (isHidden) {
-                mobileMenu.classList.remove('hidden');
-                // Force reflow
-                mobileMenu.offsetHeight;
-                mobileMenu.classList.add('show');
-            } else {
-                mobileMenu.classList.remove('show');
-                setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
-                }, 300);
-            }
-            
-            mobileMenuButton.setAttribute('aria-expanded', isHidden);
-            
-            // Update icon
-            const icon = mobileMenuButton.querySelector('i');
-            if (isHidden) {
-                icon.setAttribute('data-feather', 'x');
-            } else {
-                icon.setAttribute('data-feather', 'menu');
-            }
-            feather.replace();
-        });
-
-        // Close mobile menu when clicking on links
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('show');
-                setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
-                }, 300);
-                
-                mobileMenuButton.setAttribute('aria-expanded', 'false');
-                
-                const icon = mobileMenuButton.querySelector('i');
-                icon.setAttribute('data-feather', 'menu');
-                feather.replace();
+            newTestBtn.addEventListener('click', () => {
+                window.location.reload();
             });
-        });
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!header.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.remove('show');
-                setTimeout(() => {
-                    mobileMenu.classList.add('hidden');
-                }, 300);
-                
-                mobileMenuButton.setAttribute('aria-expanded', 'false');
-                
-                const icon = mobileMenuButton.querySelector('i');
-                icon.setAttribute('data-feather', 'menu');
-                feather.replace();
-            }
-        });
+            writingArea.addEventListener('input', updateWordCount);
 
-        // --- Enhanced Scroll to Top Button ---
-        const scrollTopBtn = document.getElementById('scrollTopBtn');
-        let scrollTimeout;
+            // Help Modal
+            helpBtn.addEventListener('click', () => showModal(helpModal));
+            document.getElementById('closeHelpBtn').addEventListener('click', () => hideModal(helpModal));
+            helpModal.querySelector('.modal-overlay').addEventListener('click', () => hideModal(helpModal));
 
-        function handleScroll() {
-            clearTimeout(scrollTimeout);
+            // Time's Up Modal
+            document.getElementById('closeTimesUpBtn').addEventListener('click', () => hideModal(timesUpModal));
+            timesUpModal.querySelector('.modal-overlay').addEventListener('click', () => hideModal(timesUpModal));
+
+            // End Test Confirmation
+            endTestBtn.addEventListener('click', () => {
+                if (testActive) showModal(endTestConfirmModal) 
+            });
+            document.getElementById('cancelEndTestBtn').addEventListener('click', () => hideModal(endTestConfirmModal));
+            endTestConfirmModal.querySelector('.modal-overlay').addEventListener('click', () => hideModal(endTestConfirmModal));
+            document.getElementById('confirmEndTestBtn').addEventListener('click', () => {
+                hideModal(endTestConfirmModal);
+                endTest();
+            });
+
+            // Hide/Show Prompt
+            hideBtn.addEventListener('click', () => {
+                isHidden = !isHidden;
+                promptPanel.classList.toggle('hidden', isHidden);
+                writingPanel.classList.toggle('md:w-1/2', !isHidden);
+                writingPanel.classList.toggle('md:w-full', isHidden);
+                hideBtn.textContent = isHidden ? "Show Prompt" : "Hide Prompt";
+            });
+
+            // Clipboard functionality
+            cutBtn.addEventListener('click', () => document.execCommand('cut'));
+            copyBtn.addEventListener('click', () => document.execCommand('copy'));
             
-            scrollTimeout = setTimeout(() => {
-                const scrolled = document.documentElement.scrollTop || document.body.scrollTop;
-                
-                if (scrolled > 300) {
-                    scrollTopBtn.style.display = "block";
-                } else {
-                    scrollTopBtn.style.display = "none";
-                }
-            }, 10);
-        }
-
-        window.addEventListener('scroll', handleScroll);
-
-        scrollTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // --- Enhanced Intersection Observer ---
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-element');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.observe').forEach(el => {
-            observer.observe(el);
-        });
-
-        // --- Smooth scroll for navigation links ---
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offsetTop = target.offsetTop - 80; // Account for fixed header
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // --- Form submission handling ---
-        const contactForm = document.querySelector('#contact form');
-        if (contactForm) {
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form data
-                const formData = new FormData(this);
-                const name = formData.get('name');
-                const email = formData.get('email');
-                const message = formData.get('message');
-                
-                // Simple validation
-                if (!name || !email || !message) {
-                    alert('Please fill in all fields.');
+            // FIX: Updated paste functionality to use the modern, more reliable async clipboard API.
+            pasteBtn.addEventListener('click', async () => {
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    console.warn("Clipboard API not available.");
                     return;
                 }
-                
-                // Here you would typically send the form data to a server
-                alert('Thank you for your message! We\'ll get back to you soon. ❤️');
-                
-                // Reset form
-                this.reset();
-            });
-        }
-
-        // --- Lazy loading for images ---
-        const images = document.querySelectorAll('img');
-        
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
+                try {
+                    writingArea.focus();
+                    const text = await navigator.clipboard.readText();
+                    if (!document.execCommand('insertText', false, text)) {
+                        // Fallback for browsers that don't support insertText
+                        const start = writingArea.selectionStart;
+                        const end = writingArea.selectionEnd;
+                        writingArea.value = writingArea.value.substring(0, start) + text + writingArea.value.substring(end);
+                        writingArea.selectionStart = writingArea.selectionEnd = start + text.length;
                     }
-                    imageObserver.unobserve(img);
+                    updateWordCount();
+                } catch (err) {
+                    console.error('Failed to paste from clipboard: ', err);
+                }
+            });
+            
+            // FIX: Added event listener to close modals with the 'Escape' key for better accessibility.
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const activeModal = [helpModal, timesUpModal, endTestConfirmModal].find(
+                        modal => !modal.classList.contains('hidden')
+                    );
+                    if (activeModal) {
+                        hideModal(activeModal);
+                    }
                 }
             });
         });
-
-        images.forEach(img => {
-            if (img.dataset.src) {
-                imageObserver.observe(img);
-            }
-        });
-
-        // --- Performance optimization: Debounced resize handler ---
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                // Reinitialize any size-dependent features if needed
-                feather.replace();
-            }, 250);
-        });
-
-        // --- Touch-friendly hover effects on mobile ---
-        if ('ontouchstart' in window) {
-            document.querySelectorAll('.gallery-item').forEach(item => {
-                item.addEventListener('touchstart', function() {
-                    const overlay = this.querySelector('.gallery-overlay');
-                    if (overlay) {
-                        overlay.style.opacity = '1';
-                    }
-                });
-                
-                item.addEventListener('touchend', function() {
-                    const overlay = this.querySelector('.gallery-overlay');
-                    if (overlay) {
-                        setTimeout(() => {
-                            overlay.style.opacity = '0';
-                        }, 2000);
-                    }
-                });
-            });
-        }
     </script>
 </body>
 </html>
