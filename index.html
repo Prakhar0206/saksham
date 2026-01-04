@@ -1,963 +1,1461 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-
-// --- Icons ---
-const PlayIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-);
-const PauseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-);
-const StopIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
-);
-const TimerIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-);
-const DownloadIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-);
-const TrashIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-);
-const EditIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-);
-const SoundIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-);
-const FlameIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.1.2-2.2.5-3.3a9 9 0 003 2.8z"/></svg>
-);
-const PlusIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-);
-const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-);
-const PencilIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-);
-const ListIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-);
-const TrophyIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8m-4-9v9m-6.7-6.3a9 9 0 0 1 0-12.7c3.5-3.5 9.2-3.5 12.7 0a9 9 0 0 1 0 12.7M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z"></path></svg>
-);
-
-// --- Audio Helper ---
-class NoiseGenerator {
-  constructor() {
-    this.audioContext = null;
-    this.source = null;
-    this.gainNode = null;
-  }
-  init() {
-    if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  }
-  play(type = 'white') {
-    this.init();
-    if (this.source) this.stop();
-    const bufferSize = 2 * this.audioContext.sampleRate;
-    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
-    const output = buffer.getChannelData(0);
-    if (type === 'white') {
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1;
-      }
-    } else if (type === 'rain') {
-      let lastOut = 0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        output[i] = (lastOut + (0.02 * white)) / 1.02;
-        lastOut = output[i];
-        output[i] *= 3.5; 
-      }
-    }
-    this.source = this.audioContext.createBufferSource();
-    this.source.buffer = buffer;
-    this.source.loop = true;
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.gain.value = 0.15;
-    this.source.connect(this.gainNode);
-    this.gainNode.connect(this.audioContext.destination);
-    this.source.start();
-  }
-  stop() {
-    if (this.source) {
-      this.source.stop();
-      this.source = null;
-    }
-  }
-}
-const soundGen = new NoiseGenerator();
-
-// --- Helper Functions ---
-const formatTime = (seconds) => {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-};
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-};
-
-// Updated XP Level System
-// 1 min study = 1 XP
-// 1 completed task = 30 XP
-const calculateLevel = (xp) => {
-  if (xp < 500) return { level: 1, title: 'Novice', next: 500 };
-  if (xp < 2500) return { level: 2, title: 'Apprentice', next: 2500 };
-  if (xp < 10000) return { level: 3, title: 'Scholar', next: 10000 };
-  if (xp < 25000) return { level: 4, title: 'Expert', next: 25000 };
-  return { level: 5, title: 'Master', next: 100000 };
-};
-
-const calculateStreak = (sessions) => {
-  if (!sessions.length) return 0;
-  const sorted = [...sessions].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const today = new Date().setHours(0,0,0,0);
-  const lastSessionDate = new Date(sorted[0].date).setHours(0,0,0,0);
-  if (lastSessionDate < today - 86400000) return 0;
-  let streak = 0;
-  const uniqueDays = new Set(sorted.map(s => new Date(s.date).setHours(0,0,0,0)));
-  let day = today;
-  if (!uniqueDays.has(today)) day -= 86400000;
-  while (uniqueDays.has(day)) {
-    streak++;
-    day -= 86400000;
-  }
-  return streak;
-};
-
-// Helper to Group Tasks by Date
-const groupTasksByDate = (taskList, dateKey) => {
-  const groups = {};
-  taskList.forEach(task => {
-    // Use completedAt if available, otherwise createdAt, fallback to now
-    const d = task[dateKey] ? new Date(task[dateKey]) : new Date(task.createdAt || Date.now());
-    const dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    
-    // Check if it is today or yesterday for nicer labels
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    
-    let label = dateStr;
-    if (dateStr === today) label = "Today";
-    else if (dateStr === yesterday) label = "Yesterday";
-
-    if (!groups[label]) groups[label] = [];
-    groups[label].push(task);
-  });
-  return groups;
-};
-
-
-export default function App() {
-  // --- STATE ---
-  const [view, setView] = useState('timer');
-  const [timerMode, setTimerMode] = useState('stopwatch');
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [pomodoroLength, setPomodoroLength] = useState(25);
-  const [sessions, setSessions] = useState([]);
-  
-  // Daily Goal State
-  const [dailyGoalMinutes, setDailyGoalMinutes] = useState(120);
-  const [isEditingGoal, setIsEditingGoal] = useState(false);
-  
-  // Sound State
-  const [activeSound, setActiveSound] = useState(null);
-
-  // Daily Tasks/Goals State
-  const [tasks, setTasks] = useState([]);
-  const [newTaskText, setNewTaskText] = useState('');
-  const [editingTaskId, setEditingTaskId] = useState(null);
-  const [editingTaskText, setEditingTaskText] = useState('');
-
-  // Modal State
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [currentSubject, setCurrentSubject] = useState('General');
-  const [focusRating, setFocusRating] = useState(5);
-  const [editingSessionId, setEditingSessionId] = useState(null); 
-  const [manualDate, setManualDate] = useState(new Date().toISOString().slice(0, 16));
-
-  // --- EFFECTS ---
-
-  // Load Data
-  useEffect(() => {
-    const savedSessions = localStorage.getItem('studySessions');
-    if (savedSessions) setSessions(JSON.parse(savedSessions));
-
-    const savedGoal = localStorage.getItem('dailyGoalMinutes');
-    if (savedGoal) setDailyGoalMinutes(parseInt(savedGoal));
-
-    const savedTasks = localStorage.getItem('dailyTasks');
-    if (savedTasks) setTasks(JSON.parse(savedTasks));
-  }, []);
-
-  // Save Tasks Persistence
-  useEffect(() => {
-    localStorage.setItem('dailyTasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  // Save Goal Persistence
-  useEffect(() => {
-    localStorage.setItem('dailyGoalMinutes', dailyGoalMinutes.toString());
-  }, [dailyGoalMinutes]);
-
-  // Timer Logic
-  useEffect(() => {
-    let interval = null;
-    if (timerRunning) {
-      interval = setInterval(() => {
-        setCurrentTime((prev) => {
-          if (timerMode === 'pomodoro') {
-            if (prev <= 0) {
-              clearInterval(interval);
-              setTimerRunning(false);
-              const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-              audio.play().catch(e => console.log('Audio play failed', e));
-              setShowSaveModal(true); 
-              return 0;
-            }
-            return prev - 1;
-          } else {
-            return prev + 1;
-          }
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timerRunning, timerMode]);
-
-  // --- ACTIONS ---
-
-  const toggleTimer = () => {
-    if (!timerRunning && currentTime === 0 && timerMode === 'pomodoro') {
-      setCurrentTime(pomodoroLength * 60);
-    }
-    setTimerRunning(!timerRunning);
-  };
-
-  const stopTimer = () => {
-    setTimerRunning(false);
-    setShowSaveModal(true);
-  };
-
-  const handleSoundToggle = (type) => {
-    if (activeSound === type) {
-      soundGen.stop();
-      setActiveSound(null);
-    } else {
-      soundGen.play(type);
-      setActiveSound(type);
-    }
-  };
-
-  // --- Task/Goal Actions ---
-  const addTask = (e) => {
-    e.preventDefault();
-    if (!newTaskText.trim()) return;
-    const newTask = { 
-      id: Date.now(), 
-      text: newTaskText, 
-      completed: false,
-      createdAt: new Date().toISOString()
-    };
-    setTasks([...tasks, newTask]);
-    setNewTaskText('');
-  };
-
-  const toggleTask = (id) => {
-    setTasks(tasks.map(t => {
-      if (t.id === id) {
-        return { 
-          ...t, 
-          completed: !t.completed, 
-          completedAt: !t.completed ? new Date().toISOString() : null // Add/remove timestamp
-        };
-      }
-      return t;
-    }));
-  };
-
-  const deleteTask = (id) => {
-    if (confirm('Delete this task permanently?')) {
-      setTasks(tasks.filter(t => t.id !== id));
-    }
-  };
-
-  const clearCompletedTasks = () => {
-    if (confirm('Remove all completed tasks?')) {
-      setTasks(tasks.filter(t => !t.completed));
-    }
-  }
-
-  const startEditingTask = (task) => {
-    setEditingTaskId(task.id);
-    setEditingTaskText(task.text);
-  };
-
-  const saveEditedTask = (id) => {
-    if (!editingTaskText.trim()) return;
-    setTasks(tasks.map(t => t.id === id ? { ...t, text: editingTaskText } : t));
-    setEditingTaskId(null);
-    setEditingTaskText('');
-  };
-
-  const cancelEditingTask = () => {
-    setEditingTaskId(null);
-    setEditingTaskText('');
-  };
-
-  // --- Session Management ---
-  const openManualEntry = () => {
-    setEditingSessionId(null);
-    setManualDate(new Date().toISOString().slice(0, 16));
-    setCurrentTime(30 * 60);
-    setTimerMode('stopwatch');
-    setFocusRating(5);
-    setCurrentSubject('General');
-    setShowSaveModal(true);
-  };
-
-  const openEditSession = (session) => {
-    setEditingSessionId(session.id);
-    setManualDate(new Date(session.date).toISOString().slice(0, 16));
-    setCurrentTime(session.duration);
-    setCurrentSubject(session.subject);
-    setFocusRating(session.rating);
-    setShowSaveModal(true);
-  };
-
-  const saveSession = () => {
-    let durationToSave = currentTime;
-    if (timerMode === 'pomodoro' && !editingSessionId) {
-      const initial = pomodoroLength * 60;
-      durationToSave = initial - currentTime;
-      if (durationToSave <= 0) durationToSave = initial;
-    }
-
-    const currentTasksSnapshot = tasks.map(t => ({
-      text: t.text,
-      completed: t.completed,
-      createdAt: t.createdAt
-    }));
-
-    if (editingSessionId) {
-      const updated = sessions.map(s => s.id === editingSessionId ? {
-        ...s,
-        date: manualDate,
-        duration: currentTime,
-        subject: currentSubject,
-        rating: focusRating
-      } : s);
-      setSessions(updated);
-      localStorage.setItem('studySessions', JSON.stringify(updated));
-    } else {
-      const newSession = {
-        id: Date.now(),
-        date: editingSessionId ? manualDate : new Date().toISOString(),
-        duration: durationToSave,
-        subject: currentSubject,
-        rating: focusRating,
-        tasksSnapshot: currentTasksSnapshot
-      };
-      const updatedSessions = [newSession, ...sessions];
-      setSessions(updatedSessions);
-      localStorage.setItem('studySessions', JSON.stringify(updatedSessions));
-    }
-    
-    setShowSaveModal(false);
-    setEditingSessionId(null);
-    if (timerMode === 'stopwatch') setCurrentTime(0);
-    else setCurrentTime(pomodoroLength * 60);
-    setFocusRating(5);
-  };
-
-  const deleteSession = (id) => {
-    if (confirm('Delete this session?')) {
-      const updated = sessions.filter(s => s.id !== id);
-      setSessions(updated);
-      localStorage.setItem('studySessions', JSON.stringify(updated));
-    }
-  };
-
-  const exportData = () => {
-    const headers = "Date,Subject,Duration(Sec),FocusRating\n";
-    const csvContent = "data:text/csv;charset=utf-8," + headers + 
-      sessions.map(s => `${s.date},${s.subject},${s.duration},${s.rating}`).join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "focus_flow_data.csv");
-    document.body.appendChild(link);
-    link.click();
-  };
-
-  // --- STATS & XP CALCULATION ---
-  const today = new Date().toLocaleDateString();
-  const todaysSessions = sessions.filter(s => new Date(s.date).toLocaleDateString() === today);
-  const totalSecondsToday = todaysSessions.reduce((acc, curr) => acc + curr.duration, 0);
-  const totalSecondsAllTime = sessions.reduce((acc, curr) => acc + curr.duration, 0);
-  const goalProgress = Math.min((totalSecondsToday / (dailyGoalMinutes * 60)) * 100, 100);
-  
-  // XP Logic: 1 min study = 1 XP. 1 Task = 30 XP.
-  const minutesStudied = Math.floor(totalSecondsAllTime / 60);
-  const tasksCompletedCount = tasks.filter(t => t.completed).length;
-  const totalXP = minutesStudied + (tasksCompletedCount * 30);
-
-  const levelData = useMemo(() => calculateLevel(totalXP), [totalXP]);
-  const streak = useMemo(() => calculateStreak(sessions), [sessions]);
-
-  // --- Derived State for To-Do View ---
-  const activeTasks = tasks.filter(t => !t.completed).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const completedTasks = tasks.filter(t => t.completed).sort((a,b) => new Date(b.completedAt || b.createdAt) - new Date(a.completedAt || a.createdAt));
-
-  // Grouping for To-Do View
-  const activeGroups = groupTasksByDate(activeTasks, 'createdAt');
-  const completedGroups = groupTasksByDate(completedTasks, 'completedAt');
-
-  return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-indigo-500 selection:text-white pb-20">
-      
-      {/* Navigation & Header */}
-      <nav className="p-4 border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-indigo-400">
-            <TimerIcon />
-            <span>FocusFlow</span>
-          </div>
-
-          <div className="flex items-center gap-4 bg-slate-800/80 px-4 py-1.5 rounded-full border border-slate-700 text-sm">
-            <div className="flex items-center gap-1 text-orange-400" title="Day Streak">
-              <FlameIcon />
-              <span className="font-bold">{streak}</span>
-            </div>
-            <div className="w-px h-4 bg-slate-600"></div>
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400">Lvl {levelData.level}</span>
-              <span className="font-bold text-indigo-300">{levelData.title}</span>
-              <span className="text-[10px] text-slate-500 bg-slate-900 px-1.5 rounded border border-slate-700">{totalXP} XP</span>
-            </div>
-            <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-               <div className="h-full bg-indigo-500" style={{ width: `${(totalXP / levelData.next) * 100}%` }}></div>
-            </div>
-          </div>
-
-          <div className="flex gap-2 bg-slate-800 p-1 rounded-lg">
-            <button 
-              onClick={() => setView('timer')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'timer' ? 'bg-indigo-600 text-white shadow-lg' : 'hover:text-white text-slate-400'}`}
-            >
-              Timer
-            </button>
-            <button 
-              onClick={() => setView('todo')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 ${view === 'todo' ? 'bg-indigo-600 text-white shadow-lg' : 'hover:text-white text-slate-400'}`}
-            >
-               To-Do
-            </button>
-            <button 
-              onClick={() => setView('history')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${view === 'history' ? 'bg-indigo-600 text-white shadow-lg' : 'hover:text-white text-slate-400'}`}
-            >
-              History
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-4xl mx-auto p-6">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Canvas Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { 
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         
-        {/* TIMER VIEW */}
-        {view === 'timer' && (
-          <div className="flex flex-col items-center justify-center gap-8 animate-in fade-in duration-500">
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #0a0e1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+        }
+
+        #viewport {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        #viewport.panning { cursor: grabbing; }
+
+        #canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform-origin: 0 0;
+            will-change: transform;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .note {
+            position: absolute;
+            width: 320px;
+            background: linear-gradient(145deg, #1a1f2e 0%, #151923 100%);
+            border-radius: 12px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            transition: box-shadow 0.15s ease, border-color 0.15s ease;
+            will-change: transform;
+            contain: layout style paint;
+        }
+
+        .note.selected {
+            border-color: #3b82f6;
+            box-shadow: 
+                0 0 0 3px rgba(59, 130, 246, 0.2),
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .note.dragging {
+            cursor: grabbing;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .note:hover {
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .note-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(20, 25, 35, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 10px 10px 0 0;
+            cursor: move;
+            min-height: 48px;
+            gap: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .drag-icon {
+            width: 20px;
+            height: 20px;
+            display: grid;
+            grid-template: repeat(3, 1fr) / repeat(2, 1fr);
+            gap: 2px;
+            opacity: 0.3;
+            flex-shrink: 0;
+        }
+
+        .drag-icon span {
+            width: 3px;
+            height: 3px;
+            background: #94a3b8;
+            border-radius: 50%;
+        }
+
+        .note-meta {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-content {
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            width: 100%;
+            min-height: 120px;
+            max-height: 600px;
+            overflow-y: auto;
+            user-select: text;
+            font-family: inherit;
+        }
+
+        .note-content::placeholder {
+            color: #475569;
+        }
+
+        .note-content::-webkit-scrollbar { width: 6px; }
+        .note-content::-webkit-scrollbar-track { background: transparent; }
+        .note-content::-webkit-scrollbar-thumb { 
+            background: rgba(148, 163, 184, 0.2); 
+            border-radius: 3px; 
+        }
+        .note-content::-webkit-scrollbar-thumb:hover { 
+            background: rgba(148, 163, 184, 0.3); 
+        }
+
+        .btn {
+            background: rgba(51, 65, 85, 0.6);
+            border: none;
+            color: #cbd5e1;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: rgba(71, 85, 105, 0.8);
+            color: #e2e8f0;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 4px;
+            padding: 4px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 6px;
+        }
+
+        .color-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .color-dot.active {
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .color-dot.active::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            height: 30px;
+            cursor: nwse-resize;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .resize-handle::before {
+            content: '';
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            width: 12px;
+            height: 12px;
+            border-right: 2px solid #64748b;
+            border-bottom: 2px solid #64748b;
+        }
+
+        .note:hover .resize-handle { opacity: 0.5; }
+        .resize-handle:hover { opacity: 1 !important; }
+
+        #toolbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 25, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 10px 16px;
+            border-radius: 14px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            z-index: 2000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .tool-btn {
+            background: rgba(51, 65, 85, 0.6);
+            border: none;
+            color: #cbd5e1;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .tool-btn:hover {
+            background: rgba(71, 85, 105, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .tool-btn:active {
+            transform: translateY(0);
+        }
+
+        .tool-btn.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .tool-btn.primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .tool-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .tool-btn:disabled:hover {
+            transform: none;
+        }
+
+        .divider {
+            width: 1px;
+            height: 24px;
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .counter {
+            color: #64748b;
+            font-size: 13px;
+            padding: 0 6px;
+        }
+
+        .save-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 12px;
+            padding: 6px 10px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+        }
+
+        .save-status.saving { color: #fbbf24; }
+        .save-status.saved { color: #4ade80; }
+
+        .zoom-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 2000;
+        }
+
+        .zoom-btn {
+            width: 42px;
+            height: 42px;
+            background: rgba(20, 25, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #cbd5e1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .zoom-btn:hover {
+            background: rgba(51, 65, 85, 0.95);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.95);
+        }
+
+        .zoom-display {
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px;
+        }
+
+        #search-bar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 25, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            z-index: 2100;
+            min-width: 400px;
+            max-width: 90vw;
+            display: none;
+        }
+
+        #search-bar.active { display: block; }
+
+        #search-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #e2e8f0;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        #search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-results {
+            margin-top: 8px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .search-item {
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .search-item:hover {
+            background: rgba(51, 65, 85, 0.7);
+            transform: translateX(4px);
+        }
+
+        .search-item mark {
+            background: #fbbf24;
+            color: #0f172a;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        #help-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #help-modal.active { display: flex; }
+
+        .help-content {
+            background: rgba(20, 25, 35, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 32px 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .help-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+        }
+
+        .help-section h3 {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .shortcut-key {
+            background: rgba(51, 65, 85, 0.6);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .shortcut-desc {
+            padding: 6px 0;
+            color: #94a3b8;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(51, 65, 85, 0.6);
+            border: none;
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.15s;
+        }
+
+        .close-modal:hover {
+            background: rgba(71, 85, 105, 0.8);
+            color: #e2e8f0;
+        }
+
+        .selection-rect {
+            position: absolute;
+            border: 2px dashed #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+            #toolbar {
+                bottom: 10px;
+                padding: 8px 12px;
+                gap: 8px;
+            }
             
-            {/* Ambient Sound Controls */}
-            <div className="absolute top-24 right-4 md:static md:self-end flex gap-2">
-              <button 
-                onClick={() => handleSoundToggle('white')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${activeSound === 'white' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'}`}
-              >
-                <SoundIcon /> White Noise
-              </button>
-              <button 
-                onClick={() => handleSoundToggle('rain')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${activeSound === 'rain' ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'}`}
-              >
-                <SoundIcon /> Rain
-              </button>
-            </div>
-
-            {/* Mode Switcher */}
-            <div className="bg-slate-800/50 p-1 rounded-lg flex text-sm font-medium mb-4">
-               <button 
-                 onClick={() => { setTimerMode('stopwatch'); setTimerRunning(false); setCurrentTime(0); }}
-                 className={`px-4 py-1.5 rounded-md transition-all ${timerMode === 'stopwatch' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`}
-               >
-                 Stopwatch
-               </button>
-               <button 
-                 onClick={() => { setTimerMode('pomodoro'); setTimerRunning(false); setCurrentTime(pomodoroLength * 60); }}
-                 className={`px-4 py-1.5 rounded-md transition-all ${timerMode === 'pomodoro' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-white'}`}
-               >
-                 Pomodoro
-               </button>
-            </div>
-
-            {/* Subject Selector */}
-            <div className="relative group">
-              <input 
-                type="text" 
-                value={currentSubject}
-                onChange={(e) => setCurrentSubject(e.target.value)}
-                disabled={timerRunning}
-                className="bg-transparent text-center text-3xl md:text-4xl font-light text-white border-b-2 border-slate-700 focus:border-indigo-500 outline-none pb-2 transition-all w-64 placeholder-slate-600"
-                placeholder="Subject..."
-              />
-            </div>
-
-            {/* Main Clock */}
-            <div className="relative group">
-              <div className="text-[6rem] md:text-[9rem] font-mono font-bold leading-none tracking-tighter tabular-nums bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
-                {formatTime(currentTime)}
-              </div>
-              
-              {!timerRunning && timerMode === 'pomodoro' && (
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <input 
-                    type="range" min="5" max="60" step="5"
-                    value={pomodoroLength}
-                    onChange={(e) => {
-                       const val = parseInt(e.target.value);
-                       setPomodoroLength(val);
-                       setCurrentTime(val * 60);
-                    }}
-                    className="accent-indigo-500 cursor-pointer"
-                  />
-                  <span className="ml-2 text-xs text-slate-400">{pomodoroLength}m</span>
-                </div>
-              )}
-            </div>
-
-            {/* Controls */}
-            <div className="flex gap-6 items-center">
-              <button 
-                onClick={toggleTimer}
-                className={`flex items-center justify-center h-20 w-20 rounded-full text-white shadow-2xl transition-all duration-300 transform hover:scale-105 ${
-                  timerRunning ? 'bg-slate-700 hover:bg-slate-600' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/30'
-                }`}
-              >
-                {timerRunning ? <PauseIcon /> : <PlayIcon />}
-              </button>
-
-              {((timerMode === 'stopwatch' && currentTime > 0) || (timerMode === 'pomodoro' && currentTime !== pomodoroLength * 60)) && !timerRunning && (
-                <button 
-                  onClick={stopTimer}
-                  className="flex items-center justify-center h-16 w-16 rounded-full bg-slate-800 hover:bg-red-500/20 hover:text-red-400 text-slate-400 border border-slate-700 transition-all duration-300"
-                >
-                  <StopIcon />
-                </button>
-              )}
-            </div>
-
-            {/* DAILY GOALS WIDGET (Minimal) */}
-            <div className="w-full max-w-md mt-6">
-              <div className="bg-slate-800/30 rounded-xl border border-slate-700/50 p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Goals</h3>
-                  <button onClick={() => setView('todo')} className="text-xs text-indigo-400 hover:text-white">Manage & History →</button>
-                </div>
-                {activeTasks.length === 0 ? (
-                  <p className="text-center text-xs text-slate-600 py-2">No active goals. Add some in the To-Do tab!</p>
-                ) : (
-                  <div className="space-y-1 max-h-32 overflow-y-auto">
-                    {activeTasks.slice(0,3).map(task => (
-                      <div key={task.id} className="flex items-center gap-2 group bg-slate-800/40 p-1.5 rounded-lg border border-transparent">
-                        <button 
-                          onClick={() => toggleTask(task.id)}
-                          className="w-4 h-4 rounded border border-slate-600 hover:border-indigo-400 flex items-center justify-center transition-colors"
-                        ></button>
-                        <span className="text-sm truncate text-slate-300 flex-1">{task.text}</span>
-                      </div>
-                    ))}
-                    {activeTasks.length > 3 && (
-                      <div className="text-xs text-center text-slate-500 pt-1">+{activeTasks.length - 3} more</div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Daily Goal Widget */}
-            <div className="w-full max-w-md mt-4">
-              <div className="flex justify-between text-xs text-slate-400 mb-1 items-end">
-                <div className="flex gap-2 items-center">
-                  <span>Daily Target:</span>
-                  {isEditingGoal ? (
-                    <input 
-                      type="number" 
-                      value={dailyGoalMinutes}
-                      onChange={(e) => setDailyGoalMinutes(e.target.value)}
-                      onBlur={() => setIsEditingGoal(false)}
-                      autoFocus
-                      className="w-16 bg-slate-800 border border-indigo-500 rounded px-1 py-0.5 text-white text-xs"
-                    />
-                  ) : (
-                    <button 
-                      onClick={() => setIsEditingGoal(true)}
-                      className="flex items-center gap-1 text-white hover:text-indigo-400 font-bold border-b border-dashed border-slate-600 hover:border-indigo-400"
-                    >
-                      {dailyGoalMinutes}m <PencilIcon />
-                    </button>
-                  )}
-                </div>
-                <span>{Math.round(goalProgress)}%</span>
-              </div>
-              <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out"
-                  style={{ width: `${goalProgress}%` }}
-                ></div>
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* TO-DO VIEW (DATE WISE) */}
-        {view === 'todo' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in slide-in-from-bottom-4 duration-500">
+            .tool-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
             
-            {/* Left Col: Active Tasks Grouped */}
-            <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden h-fit">
-              <div className="p-4 border-b border-slate-700 bg-slate-900/50 flex justify-between items-center">
-                 <h3 className="font-bold text-white flex items-center gap-2"><ListIcon /> Active Tasks</h3>
-                 <span className="bg-indigo-600 text-xs px-2 py-0.5 rounded-full text-white">{activeTasks.length}</span>
-              </div>
-              
-              <div className="p-4">
-                <form onSubmit={addTask} className="flex gap-2 mb-6">
-                  <input 
-                    type="text" 
-                    value={newTaskText}
-                    onChange={(e) => setNewTaskText(e.target.value)}
-                    placeholder="Add a new task..."
-                    className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm text-white focus:border-indigo-500 outline-none transition-all"
-                  />
-                  <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold transition-colors">Add</button>
-                </form>
-
-                <div className="space-y-6">
-                  {Object.keys(activeGroups).length === 0 && (
-                    <div className="text-center py-6 text-slate-500">
-                      <p>No active tasks.</p>
-                      <p className="text-xs mt-1">Add one to earn 30 XP!</p>
-                    </div>
-                  )}
-                  
-                  {Object.entries(activeGroups).map(([dateLabel, groupTasks]) => (
-                    <div key={dateLabel}>
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">{dateLabel}</h4>
-                      <div className="space-y-2">
-                        {groupTasks.map(task => (
-                          <div key={task.id} className="flex items-start gap-3 group bg-slate-700/30 p-3 rounded-xl border border-transparent hover:border-slate-600 transition-all">
-                            {editingTaskId === task.id ? (
-                              <div className="flex-1 flex gap-2">
-                                <input
-                                  type="text"
-                                  value={editingTaskText}
-                                  onChange={(e) => setEditingTaskText(e.target.value)}
-                                  className="flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 outline-none"
-                                  autoFocus
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') saveEditedTask(task.id);
-                                    if (e.key === 'Escape') cancelEditingTask();
-                                  }}
-                                />
-                                <button onClick={() => saveEditedTask(task.id)} className="text-emerald-400 hover:text-emerald-300"><CheckIcon /></button>
-                                <button onClick={cancelEditingTask} className="text-slate-500 hover:text-slate-300">✕</button>
-                              </div>
-                            ) : (
-                              <>
-                                <button 
-                                  onClick={() => toggleTask(task.id)}
-                                  className="mt-1 w-5 h-5 rounded-full border-2 border-slate-500 hover:border-indigo-400 hover:bg-indigo-500/20 flex items-center justify-center transition-all flex-shrink-0"
-                                ></button>
-                                <div className="flex-1 min-w-0">
-                                  <span className="text-sm font-medium text-slate-200 block break-words">{task.text}</span>
-                                </div>
-                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button onClick={() => startEditingTask(task)} className="p-1.5 text-slate-500 hover:text-indigo-400 hover:bg-slate-700 rounded">
-                                      <PencilIcon />
-                                  </button>
-                                  <button onClick={() => deleteTask(task.id)} className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded">
-                                      <TrashIcon />
-                                  </button>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Col: Completed History (Date Wise) */}
-            <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden h-fit">
-               <div className="p-4 border-b border-slate-700 bg-slate-900/30 flex justify-between items-center">
-                 <h3 className="font-bold text-slate-300 flex items-center gap-2"><CheckIcon /> Completed History</h3>
-                 <span className="bg-emerald-900/50 text-emerald-400 text-xs px-2 py-0.5 rounded-full border border-emerald-900">{completedTasks.length} Done</span>
-              </div>
-              
-              <div className="p-4">
-                 {Object.keys(completedGroups).length === 0 ? (
-                   <div className="text-center py-10 text-slate-600">
-                     <p>History is empty.</p>
-                     <p className="text-xs mt-1">Finish a task to see it here.</p>
-                   </div>
-                 ) : (
-                   <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                     {Object.entries(completedGroups).map(([dateLabel, groupTasks]) => (
-                        <div key={dateLabel}>
-                           <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1 flex justify-between">
-                             {dateLabel} 
-                             <span className="text-emerald-500/50">+{groupTasks.length * 30} XP</span>
-                           </h4>
-                           <div className="space-y-2">
-                              {groupTasks.map(task => (
-                                <div key={task.id} className="flex items-center gap-3 bg-slate-800/20 p-3 rounded-lg border border-slate-800 opacity-70 hover:opacity-100 transition-opacity">
-                                    <button 
-                                      onClick={() => toggleTask(task.id)}
-                                      className="w-5 h-5 rounded-full bg-emerald-500 border border-emerald-500 flex items-center justify-center text-white flex-shrink-0 hover:bg-emerald-600"
-                                    >
-                                      <CheckIcon />
-                                    </button>
-                                    <div className="flex-1 min-w-0">
-                                      <span className="text-sm text-slate-400 line-through block truncate">{task.text}</span>
-                                    </div>
-                                    <span className="text-xs text-emerald-400 font-bold px-2 py-0.5 bg-emerald-900/30 rounded">+30 XP</span>
-                                    <button onClick={() => deleteTask(task.id)} className="text-slate-600 hover:text-red-400 p-2">
-                                      <TrashIcon />
-                                    </button>
-                                </div>
-                              ))}
-                           </div>
-                        </div>
-                     ))}
-                   </div>
-                 )}
-                 {completedTasks.length > 0 && (
-                   <button 
-                    onClick={clearCompletedTasks} 
-                    className="w-full mt-4 text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 py-2 rounded-lg transition-colors border border-dashed border-red-900/50"
-                   >
-                     Clear History Log
-                   </button>
-                 )}
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* HISTORY & STATS VIEW */}
-        {view === 'history' && (
-          <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+            .counter, .save-status { display: none; }
             
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Total Time</h3>
-                <div className="text-3xl font-bold text-white">
-                  {formatTime(totalSecondsAllTime)}
-                </div>
-              </div>
-              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Current XP</h3>
-                <div className="text-3xl font-bold text-indigo-400">{totalXP} XP</div>
-                <div className="text-xs text-slate-500 mt-1">{levelData.title} (Lvl {levelData.level})</div>
-              </div>
-              <div className="bg-slate-800 p-6 rounded-xl border border-slate-700">
-                <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Current Streak</h3>
-                <div className="text-3xl font-bold text-orange-400 flex items-center gap-2">
-                  <FlameIcon /> {streak} Days
-                </div>
-              </div>
-            </div>
+            #search-bar {
+                min-width: calc(100vw - 40px);
+            }
 
-            {/* History List */}
-            <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="p-6 border-b border-slate-700 flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-white">Session Log</h3>
-                <div className="flex gap-2">
-                  <button onClick={openManualEntry} className="flex items-center gap-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-md transition-colors">
-                    <PlusIcon /> Add Manual
-                  </button>
-                  <button onClick={exportData} className="flex items-center gap-2 text-xs font-medium bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-md transition-colors">
-                    <DownloadIcon /> Export CSV
-                  </button>
-                </div>
-              </div>
-              <div className="max-h-[500px] overflow-y-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-900/50 text-slate-400 sticky top-0 z-10 backdrop-blur-md">
-                    <tr>
-                      <th className="p-4 font-medium">Date</th>
-                      <th className="p-4 font-medium">Subject</th>
-                      <th className="p-4 font-medium">Duration</th>
-                      <th className="p-4 font-medium">Goals</th>
-                      <th className="p-4 font-medium">Focus</th>
-                      <th className="p-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-700/50">
-                    {sessions.length === 0 ? (
-                      <tr><td colSpan="6" className="p-8 text-center text-slate-500">No sessions logged yet.</td></tr>
-                    ) : (
-                      sessions.sort((a,b) => new Date(b.date) - new Date(a.date)).map((session) => (
-                        <tr key={session.id} className="hover:bg-slate-700/30 transition-colors group">
-                          <td className="p-4 text-slate-300 whitespace-nowrap">{formatDate(session.date)}</td>
-                          <td className="p-4 text-white font-medium">{session.subject}</td>
-                          <td className="p-4 font-mono text-slate-300">{formatTime(session.duration)}</td>
-                          <td className="p-4 text-slate-400">
-                             {session.tasksSnapshot && session.tasksSnapshot.length > 0 ? (
-                               <div className="flex flex-col gap-1">
-                                 {session.tasksSnapshot.map((t, idx) => (
-                                   <div key={idx} className="flex items-center gap-1.5 text-xs">
-                                     {t.completed ? <span className="text-emerald-400">✓</span> : <span className="text-red-400">✗</span>}
-                                     <span className={t.completed ? "text-slate-400" : "text-slate-500"}>{t.text}</span>
-                                   </div>
-                                 ))}
-                               </div>
-                             ) : (
-                               <span className="text-slate-600 text-xs italic">No goals recorded</span>
-                             )}
-                          </td>
-                          <td className="p-4">
-                            <span className={`px-2 py-1 rounded text-xs font-bold ${
-                              session.rating >= 4 ? 'bg-emerald-500/20 text-emerald-400' : 
-                              session.rating >= 3 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'
-                            }`}>
-                              {session.rating}/5
-                            </span>
-                          </td>
-                          <td className="p-4 text-right">
-                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button onClick={() => openEditSession(session)} className="text-slate-500 hover:text-indigo-400 transition-colors">
-                                <EditIcon />
-                              </button>
-                              <button onClick={() => deleteSession(session.id)} className="text-slate-500 hover:text-red-400 transition-colors">
-                                <TrashIcon />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* SAVE/EDIT SESSION MODAL */}
-      {showSaveModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 w-full max-w-md shadow-2xl p-6 animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {editingSessionId ? 'Edit Session' : 'Session Complete!'}
-            </h2>
-            
-            <div className="space-y-4 mt-6">
-              
-              {(editingSessionId || timerMode === 'stopwatch') && (
-                 <div>
-                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Duration (Seconds)</label>
-                   <div className="flex gap-2">
-                     <input 
-                       type="number"
-                       value={currentTime} 
-                       onChange={(e) => setCurrentTime(parseInt(e.target.value) || 0)}
-                       className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white font-mono"
-                     />
-                     <div className="flex items-center text-slate-500 text-sm">
-                       = {formatTime(currentTime)}
-                     </div>
-                   </div>
-                 </div>
-              )}
-
-              {(editingSessionId) && (
-                <div>
-                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Date</label>
-                   <input 
-                    type="datetime-local" 
-                    value={manualDate}
-                    onChange={(e) => setManualDate(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white"
-                   />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Subject</label>
-                <input 
-                  type="text" 
-                  value={currentSubject}
-                  onChange={(e) => setCurrentSubject(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Focus Rating</label>
-                <div className="flex justify-between gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => setFocusRating(star)}
-                      className={`flex-1 py-3 rounded-lg font-bold transition-all ${
-                        focusRating === star 
-                          ? 'bg-indigo-600 text-white transform scale-105 shadow-lg' 
-                          : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
-                      }`}
-                    >
-                      {star}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 flex gap-3">
-                <button 
-                  onClick={() => { setShowSaveModal(false); setEditingSessionId(null); }}
-                  className="flex-1 py-3 text-slate-400 hover:text-white transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={saveSession}
-                  className="flex-1 py-3 bg-white text-slate-900 rounded-lg font-bold hover:bg-indigo-50 transition-colors"
-                >
-                  {editingSessionId ? 'Update Log' : 'Save Session'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+            .zoom-panel {
+                top: auto;
+                bottom: 80px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    
+    <div id="viewport">
+        <div id="canvas"></div>
     </div>
-  );
-}
+
+    <div id="toolbar">
+        <button class="tool-btn primary" id="new-note" title="Ctrl+N">+ New</button>
+        <span class="counter" id="note-count">0 notes</span>
+        <div class="save-status saved" id="save-status">
+            <span id="save-icon">✓</span>
+            <span id="save-text">Saved</span>
+        </div>
+        <div class="divider"></div>
+        <button class="tool-btn" id="search-btn" title="Ctrl+F">🔍</button>
+        <button class="tool-btn" id="undo-btn" title="Ctrl+Z" disabled>↶</button>
+        <button class="tool-btn" id="redo-btn" title="Ctrl+Y" disabled>↷</button>
+        <button class="tool-btn" id="help-btn" title="?">?</button>
+    </div>
+
+    <div class="zoom-panel">
+        <button class="zoom-btn" id="zoom-in" title="Ctrl + =">+</button>
+        <div class="zoom-display" id="zoom-display">100%</div>
+        <button class="zoom-btn" id="zoom-out" title="Ctrl + -">−</button>
+        <button class="zoom-btn" id="zoom-reset" title="Ctrl + 0">⊙</button>
+    </div>
+
+    <div id="search-bar">
+        <input type="text" id="search-input" placeholder="Search notes... (Press Esc to close)">
+        <div class="search-results" id="search-results"></div>
+    </div>
+
+    <div id="help-modal">
+        <div class="help-content">
+            <button class="close-modal" id="close-help">×</button>
+            <div class="help-title">⌨️ Keyboard Shortcuts</div>
+            
+            <div class="help-section">
+                <h3>Note Actions</h3>
+                <div class="shortcut-grid">
+                    <span class="shortcut-key">Ctrl+N</span>
+                    <span class="shortcut-desc">Create new note</span>
+                    <span class="shortcut-key">Ctrl+D</span>
+                    <span class="shortcut-desc">Duplicate selected</span>
+                    <span class="shortcut-key">Delete</span>
+                    <span class="shortcut-desc">Delete selected</span>
+                    <span class="shortcut-key">Esc</span>
+                    <span class="shortcut-desc">Deselect all</span>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h3>History</h3>
+                <div class="shortcut-grid">
+                    <span class="shortcut-key">Ctrl+Z</span>
+                    <span class="shortcut-desc">Undo last action</span>
+                    <span class="shortcut-key">Ctrl+Y</span>
+                    <span class="shortcut-desc">Redo action</span>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h3>View Controls</h3>
+                <div class="shortcut-grid">
+                    <span class="shortcut-key">Ctrl+F</span>
+                    <span class="shortcut-desc">Search notes</span>
+                    <span class="shortcut-key">Ctrl + =</span>
+                    <span class="shortcut-desc">Zoom in</span>
+                    <span class="shortcut-key">Ctrl + -</span>
+                    <span class="shortcut-desc">Zoom out</span>
+                    <span class="shortcut-key">Ctrl+0</span>
+                    <span class="shortcut-desc">Reset zoom</span>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h3>Tips & Tricks</h3>
+                <div class="shortcut-grid">
+                    <span class="shortcut-key">Double-click</span>
+                    <span class="shortcut-desc">Create note at position</span>
+                    <span class="shortcut-key">Shift+Click</span>
+                    <span class="shortcut-desc">Multi-select notes</span>
+                    <span class="shortcut-key">Drag canvas</span>
+                    <span class="shortcut-desc">Pan around workspace</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== STATE ==========
+        const state = {
+            notes: new Map(),
+            selected: new Set(),
+            zoom: 1,
+            panX: 0,
+            panY: 0,
+            history: [],
+            historyIndex: -1,
+            maxHistory: 50,
+            dragging: null,
+            resizing: null,
+            panning: null,
+            selecting: null
+        };
+
+        const colors = {
+            slate: { bg: 'linear-gradient(145deg, #1a1f2e 0%, #151923 100%)', dot: '#475569' },
+            blue: { bg: 'linear-gradient(145deg, #1e3a8a 0%, #1e40af 100%)', dot: '#3b82f6' },
+            emerald: { bg: 'linear-gradient(145deg, #065f46 0%, #047857 100%)', dot: '#10b981' },
+            violet: { bg: 'linear-gradient(145deg, #5b21b6 0%, #6d28d9 100%)', dot: '#8b5cf6' },
+            rose: { bg: 'linear-gradient(145deg, #be123c 0%, #e11d48 100%)', dot: '#f43f5e' },
+            amber: { bg: 'linear-gradient(145deg, #d97706 0%, #f59e0b 100%)', dot: '#fbbf24' }
+        };
+
+        // ========== ELEMENTS ==========
+        const el = {
+            viewport: document.getElementById('viewport'),
+            canvas: document.getElementById('canvas'),
+            newNote: document.getElementById('new-note'),
+            searchBtn: document.getElementById('search-btn'),
+            searchBar: document.getElementById('search-bar'),
+            searchInput: document.getElementById('search-input'),
+            searchResults: document.getElementById('search-results'),
+            undoBtn: document.getElementById('undo-btn'),
+            redoBtn: document.getElementById('redo-btn'),
+            helpBtn: document.getElementById('help-btn'),
+            helpModal: document.getElementById('help-modal'),
+            closeHelp: document.getElementById('close-help'),
+            noteCount: document.getElementById('note-count'),
+            saveStatus: document.getElementById('save-status'),
+            saveIcon: document.getElementById('save-icon'),
+            saveText: document.getElementById('save-text'),
+            zoomIn: document.getElementById('zoom-in'),
+            zoomOut: document.getElementById('zoom-out'),
+            zoomReset: document.getElementById('zoom-reset'),
+            zoomDisplay: document.getElementById('zoom-display')
+        };
+
+        // ========== UTILITIES ==========
+        function uid() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+        }
+
+        function debounce(fn, ms) {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn(...args), ms);
+            };
+        }
+
+        function clamp(val, min, max) {
+            return Math.min(Math.max(val, min), max);
+        }
+
+        // ========== SAVE/LOAD ==========
+        function saveToStorage() {
+            try {
+                el.saveStatus.className = 'save-status saving';
+                el.saveIcon.textContent = '⟳';
+                el.saveText.textContent = 'Saving...';
+
+                const data = {
+                    notes: Array.from(state.notes.values()),
+                    canvas: { zoom: state.zoom, panX: state.panX, panY: state.panY },
+                    version: 1
+                };
+                localStorage.setItem('canvasData', JSON.stringify(data));
+
+                setTimeout(() => {
+                    el.saveStatus.className = 'save-status saved';
+                    el.saveIcon.textContent = '✓';
+                    el.saveText.textContent = 'Saved';
+                }, 300);
+            } catch (e) {
+                console.error('Save failed:', e);
+            }
+        }
+
+        const debouncedSave = debounce(saveToStorage, 500);
+
+        function loadFromStorage() {
+            try {
+                const data = JSON.parse(localStorage.getItem('canvasData'));
+                if (!data) return false;
+
+                data.notes.forEach(note => {
+                    state.notes.set(note.id, note);
+                    renderNote(note);
+                });
+
+                if (data.canvas) {
+                    state.zoom = data.canvas.zoom || 1;
+                    state.panX = data.canvas.panX || 0;
+                    state.panY = data.canvas.panY || 0;
+                    updateCanvas();
+                }
+
+                updateCount();
+                return true;
+            } catch (e) {
+                console.error('Load failed:', e);
+                return false;
+            }
+        }
+
+        // ========== HISTORY ==========
+        function addHistory(action) {
+            state.history = state.history.slice(0, state.historyIndex + 1);
+            state.history.push(action);
+            
+            if (state.history.length > state.maxHistory) {
+                state.history.shift();
+            } else {
+                state.historyIndex++;
+            }
+            
+            updateHistoryBtns();
+        }
+
+        function undo() {
+            if (state.historyIndex < 0) return;
+            
+            const action = state.history[state.historyIndex];
+            executeHistoryAction(action, true);
+            
+            state.historyIndex--;
+            updateHistoryBtns();
+            debouncedSave();
+        }
+
+        function redo() {
+            if (state.historyIndex >= state.history.length - 1) return;
+            
+            state.historyIndex++;
+            const action = state.history[state.historyIndex];
+            executeHistoryAction(action, false);
+            
+            updateHistoryBtns();
+            debouncedSave();
+        }
+
+        function executeHistoryAction(action, isUndo) {
+            switch (action.type) {
+                case 'create':
+                    if (isUndo) deleteNote(action.id);
+                    else createNoteFromData(action.data);
+                    break;
+                case 'delete':
+                    if (isUndo) createNoteFromData(action.data);
+                    else deleteNote(action.id);
+                    break;
+                case 'update':
+                    updateNoteFromData(isUndo ? action.before : action.after);
+                    break;
+            }
+        }
+
+        function updateHistoryBtns() {
+            el.undoBtn.disabled = state.historyIndex < 0;
+            el.redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+        }
+
+        // ========== NOTE MANAGEMENT ==========
+        function createNote(x, y) {
+            const note = {
+                id: uid(),
+                x: x,
+                y: y,
+                width: 320,
+                content: '',
+                color: 'slate',
+                created: Date.now(),
+                modified: Date.now()
+            };
+
+            state.notes.set(note.id, note);
+            renderNote(note);
+            updateCount();
+
+            addHistory({ type: 'create', id: note.id, data: {...note} });
+            debouncedSave();
+
+            // Focus the textarea
+            setTimeout(() => {
+                const noteEl = document.querySelector(`[data-id="${note.id}"]`);
+                if (noteEl) {
+                    noteEl.querySelector('.note-content').focus();
+                }
+            }, 50);
+
+            return note;
+        }
+
+        function createNoteFromData(data) {
+            state.notes.set(data.id, data);
+            renderNote(data);
+            updateCount();
+        }
+
+        function deleteNote(id) {
+            const noteEl = document.querySelector(`[data-id="${id}"]`);
+            if (noteEl) noteEl.remove();
+            
+            state.notes.delete(id);
+            state.selected.delete(id);
+            updateCount();
+        }
+
+        function updateNoteContent(id, content) {
+            const note = state.notes.get(id);
+            if (!note) return;
+
+            const before = {...note};
+            note.content = content;
+            note.modified = Date.now();
+
+            addHistory({ type: 'update', id, before, after: {...note} });
+            debouncedSave();
+        }
+
+        function updateNoteColor(id, color) {
+            const note = state.notes.get(id);
+            if (!note) return;
+
+            const before = {...note};
+            note.color = color;
+            note.modified = Date.now();
+
+            addHistory({ type: 'update', id, before, after: {...note} });
+            debouncedSave();
+        }
+
+        function updateNoteFromData(data) {
+            const note = state.notes.get(data.id);
+            if (!note) return;
+
+            Object.assign(note, data);
+            
+            const noteEl = document.querySelector(`[data-id="${data.id}"]`);
+            if (noteEl) {
+                noteEl.style.left = data.x + 'px';
+                noteEl.style.top = data.y + 'px';
+                noteEl.style.width = data.width + 'px';
+                noteEl.style.background = colors[data.color].bg;
+                noteEl.querySelector('.note-content').value = data.content;
+            }
+        }
+
+        function duplicateSelected() {
+            const selected = Array.from(state.selected);
+            if (selected.length === 0) return;
+
+            state.selected.clear();
+
+            selected.forEach(id => {
+                const note = state.notes.get(id);
+                if (!note) return;
+
+                const newNote = {
+                    ...note,
+                    id: uid(),
+                    x: note.x + 30,
+                    y: note.y + 30,
+                    created: Date.now(),
+                    modified: Date.now()
+                };
+
+                state.notes.set(newNote.id, newNote);
+                renderNote(newNote);
+                state.selected.add(newNote.id);
+
+                addHistory({ type: 'create', id: newNote.id, data: {...newNote} });
+            });
+
+            updateCount();
+            updateSelection();
+            debouncedSave();
+        }
+
+        function deleteSelected() {
+            const selected = Array.from(state.selected);
+            if (selected.length === 0) return;
+
+            selected.forEach(id => {
+                const note = state.notes.get(id);
+                if (!note) return;
+
+                deleteNote(id);
+                addHistory({ type: 'delete', id, data: {...note} });
+            });
+
+            state.selected.clear();
+            updateSelection();
+            debouncedSave();
+        }
+
+        // ========== RENDERING ==========
+        function renderNote(note) {
+            const div = document.createElement('div');
+            div.className = 'note';
+            div.dataset.id = note.id;
+            div.style.left = note.x + 'px';
+            div.style.top = note.y + 'px';
+            div.style.width = note.width + 'px';
+            div.style.background = colors[note.color].bg;
+
+            const colorDots = Object.keys(colors).map(key => 
+                `<div class="color-dot ${key === note.color ? 'active' : ''}" 
+                     style="background: ${colors[key].dot};" 
+                     data-color="${key}"></div>`
+            ).join('');
+
+            div.innerHTML = `
+                <div class="note-header">
+                    <div class="header-left">
+                        <div class="drag-icon">
+                            ${Array(6).fill('<span></span>').join('')}
+                        </div>
+                        <div class="note-meta">${new Date(note.created).toLocaleDateString()}</div>
+                    </div>
+                    <div class="header-right">
+                        <div class="color-picker">${colorDots}</div>
+                        <button class="btn btn-delete">×</button>
+                    </div>
+                </div>
+                <textarea class="note-content" placeholder="Type your note...">${note.content}</textarea>
+                <div class="resize-handle"></div>
+            `;
+
+            el.canvas.appendChild(div);
+            setupNoteEvents(div, note);
+        }
+
+        function setupNoteEvents(noteEl, note) {
+            const header = noteEl.querySelector('.note-header');
+            const textarea = noteEl.querySelector('.note-content');
+            const deleteBtn = noteEl.querySelector('.btn-delete');
+            const resizeHandle = noteEl.querySelector('.resize-handle');
+            const colorDots = noteEl.querySelectorAll('.color-dot');
+
+            // Select note
+            noteEl.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.note-header') || 
+                    e.target.closest('.btn') || 
+                    e.target.closest('.color-dot') ||
+                    e.target.closest('.resize-handle')) return;
+
+                if (!e.shiftKey && !state.selected.has(note.id)) {
+                    state.selected.clear();
+                }
+                state.selected.add(note.id);
+                updateSelection();
+            });
+
+            // Drag
+            header.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.btn') || e.target.closest('.color-dot')) return;
+
+                if (!state.selected.has(note.id)) {
+                    state.selected.clear();
+                    state.selected.add(note.id);
+                    updateSelection();
+                }
+
+                const selected = Array.from(state.selected).map(id => ({
+                    id,
+                    note: state.notes.get(id),
+                    el: document.querySelector(`[data-id="${id}"]`),
+                    startX: state.notes.get(id).x,
+                    startY: state.notes.get(id).y
+                }));
+
+                state.dragging = {
+                    notes: selected,
+                    startMouseX: e.clientX,
+                    startMouseY: e.clientY
+                };
+
+                selected.forEach(item => item.el.classList.add('dragging'));
+                e.preventDefault();
+            });
+
+            // Resize
+            resizeHandle.addEventListener('mousedown', (e) => {
+                state.resizing = {
+                    id: note.id,
+                    startWidth: note.width,
+                    startX: e.clientX
+                };
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            // Content change
+            let contentTimeout;
+            textarea.addEventListener('input', (e) => {
+                clearTimeout(contentTimeout);
+                contentTimeout = setTimeout(() => {
+                    updateNoteContent(note.id, e.target.value);
+                }, 500);
+            });
+
+            // Delete
+            deleteBtn.addEventListener('click', () => {
+                const noteData = {...note};
+                deleteNote(note.id);
+                addHistory({ type: 'delete', id: note.id, data: noteData });
+                debouncedSave();
+            });
+
+            // Color change
+            colorDots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    const color = e.target.dataset.color;
+                    noteEl.style.background = colors[color].bg;
+                    updateNoteColor(note.id, color);
+                    
+                    colorDots.forEach(d => d.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
+            });
+        }
+
+        function updateSelection() {
+            document.querySelectorAll('.note').forEach(el => {
+                if (state.selected.has(el.dataset.id)) {
+                    el.classList.add('selected');
+                } else {
+                    el.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateCount() {
+            const count = state.notes.size;
+            el.noteCount.textContent = `${count} note${count !== 1 ? 's' : ''}`;
+        }
+
+        // ========== CANVAS TRANSFORM ==========
+        function updateCanvas() {
+            el.canvas.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+            el.zoomDisplay.textContent = Math.round(state.zoom * 100) + '%';
+        }
+
+        function setZoom(newZoom) {
+            state.zoom = clamp(newZoom, 0.25, 3);
+            updateCanvas();
+            debouncedSave();
+        }
+
+        // ========== SEARCH ==========
+        function performSearch() {
+            const query = el.searchInput.value.toLowerCase().trim();
+            el.searchResults.innerHTML = '';
+
+            if (!query) return;
+
+            const results = [];
+            state.notes.forEach(note => {
+                if (note.content.toLowerCase().includes(query)) {
+                    results.push(note);
+                }
+            });
+
+            if (results.length === 0) {
+                el.searchResults.innerHTML = '<div class="search-item" style="opacity:0.5">No results found</div>';
+                return;
+            }
+
+            results.forEach(note => {
+                const div = document.createElement('div');
+                div.className = 'search-item';
+                
+                const content = note.content.slice(0, 100);
+                const regex = new RegExp(`(${query})`, 'gi');
+                const highlighted = content.replace(regex, '<mark>$1</mark>');
+                
+                div.innerHTML = highlighted || '(Empty note)';
+                div.addEventListener('click', () => {
+                    // Pan to note
+                    const centerX = window.innerWidth / 2;
+                    const centerY = window.innerHeight / 2;
+                    state.panX = centerX - (note.x * state.zoom) - (note.width * state.zoom / 2);
+                    state.panY = centerY - (note.y * state.zoom) - 100;
+                    updateCanvas();
+                    
+                    // Select note
+                    state.selected.clear();
+                    state.selected.add(note.id);
+                    updateSelection();
+                    
+                    // Close search
+                    el.searchBar.classList.remove('active');
+                });
+                
+                el.searchResults.appendChild(div);
+            });
+        }
+
+        const debouncedSearch = debounce(performSearch, 300);
+
+        // ========== MOUSE EVENTS ==========
+        let mouseMoveHandler = (e) => {
+            if (state.dragging) {
+                const dx = (e.clientX - state.dragging.startMouseX) / state.zoom;
+                const dy = (e.clientY - state.dragging.startMouseY) / state.zoom;
+
+                state.dragging.notes.forEach(item => {
+                    item.note.x = item.startX + dx;
+                    item.note.y = item.startY + dy;
+                    item.el.style.left = item.note.x + 'px';
+                    item.el.style.top = item.note.y + 'px';
+                });
+            } else if (state.resizing) {
+                const dx = e.clientX - state.resizing.startX;
+                const newWidth = clamp(state.resizing.startWidth + dx, 280, 600);
+                
+                const note = state.notes.get(state.resizing.id);
+                const noteEl = document.querySelector(`[data-id="${state.resizing.id}"]`);
+                
+                if (note && noteEl) {
+                    note.width = newWidth;
+                    noteEl.style.width = newWidth + 'px';
+                }
+            } else if (state.panning) {
+                const dx = e.clientX - state.panning.startX;
+                const dy = e.clientY - state.panning.startY;
+                state.panX = state.panning.startPanX + dx;
+                state.panY = state.panning.startPanY + dy;
+                updateCanvas();
+            } else if (state.selecting) {
+                const x1 = Math.min(state.selecting.startX, e.clientX);
+                const y1 = Math.min(state.selecting.startY, e.clientY);
+                const x2 = Math.max(state.selecting.startX, e.clientX);
+                const y2 = Math.max(state.selecting.startY, e.clientY);
+
+                state.selecting.rect.style.left = x1 + 'px';
+                state.selecting.rect.style.top = y1 + 'px';
+                state.selecting.rect.style.width = (x2 - x1) + 'px';
+                state.selecting.rect.style.height = (y2 - y1) + 'px';
+
+                // Update selection
+                state.selected.clear();
+                document.querySelectorAll('.note').forEach(noteEl => {
+                    const rect = noteEl.getBoundingClientRect();
+                    if (rect.right > x1 && rect.left < x2 && rect.bottom > y1 && rect.top < y2) {
+                        state.selected.add(noteEl.dataset.id);
+                    }
+                });
+                updateSelection();
+            }
+        };
+
+        let mouseUpHandler = () => {
+            if (state.dragging) {
+                state.dragging.notes.forEach(item => {
+                    item.el.classList.remove('dragging');
+                });
+                state.dragging = null;
+                debouncedSave();
+            }
+            
+            if (state.resizing) {
+                state.resizing = null;
+                debouncedSave();
+            }
+            
+            if (state.panning) {
+                state.panning = null;
+                el.viewport.classList.remove('panning');
+                debouncedSave();
+            }
+
+            if (state.selecting) {
+                state.selecting.rect.remove();
+                state.selecting = null;
+            }
+        };
+
+        window.addEventListener('mousemove', mouseMoveHandler);
+        window.addEventListener('mouseup', mouseUpHandler);
+
+        // Canvas panning
+        el.viewport.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.note') || e.target.closest('#toolbar') || 
+                e.target.closest('.zoom-panel') || e.target.closest('#search-bar')) return;
+
+            if (e.shiftKey) {
+                // Multi-select with drag
+                const rect = document.createElement('div');
+                rect.className = 'selection-rect';
+                rect.style.left = e.clientX + 'px';
+                rect.style.top = e.clientY + 'px';
+                document.body.appendChild(rect);
+
+                state.selecting = {
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    rect: rect
+                };
+            } else {
+                // Pan canvas
+                state.panning = {
+                    startX: e.clientX,
+                    startY: e.clientY,
+                    startPanX: state.panX,
+                    startPanY: state.panY
+                };
+                el.viewport.classList.add('panning');
+            }
+
+            e.preventDefault();
+        });
+
+        // Double-click to create note
+        el.viewport.addEventListener('dblclick', (e) => {
+            if (e.target.closest('.note')) return;
+
+            const x = (e.clientX - state.panX) / state.zoom;
+            const y = (e.clientY - state.panY) / state.zoom;
+            createNote(x, y);
+        });
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        window.addEventListener('keydown', (e) => {
+            // Don't trigger if typing in textarea
+            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    if (e.target.id === 'search-input') {
+                        el.searchBar.classList.remove('active');
+                    }
+                }
+                return;
+            }
+
+            const ctrl = e.ctrlKey || e.metaKey;
+
+            if (ctrl && e.key === 'n') {
+                e.preventDefault();
+                const x = (window.innerWidth / 2 - state.panX) / state.zoom;
+                const y = (window.innerHeight / 2 - state.panY) / state.zoom;
+                createNote(x, y);
+            } else if (ctrl && e.key === 'd') {
+                e.preventDefault();
+                duplicateSelected();
+            } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                e.preventDefault();
+                deleteSelected();
+            } else if (e.key === 'Escape') {
+                state.selected.clear();
+                updateSelection();
+                el.searchBar.classList.remove('active');
+                el.helpModal.classList.remove('active');
+            } else if (ctrl && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            } else if (ctrl && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            } else if (ctrl && e.key === 'f') {
+                e.preventDefault();
+                el.searchBar.classList.toggle('active');
+                if (el.searchBar.classList.contains('active')) {
+                    el.searchInput.focus();
+                }
+            } else if (ctrl && (e.key === '=' || e.key === '+')) {
+                e.preventDefault();
+                setZoom(state.zoom + 0.1);
+            } else if (ctrl && (e.key === '-' || e.key === '_')) {
+                e.preventDefault();
+                setZoom(state.zoom - 0.1);
+            } else if (ctrl && e.key === '0') {
+                e.preventDefault();
+                state.zoom = 1;
+                updateCanvas();
+            } else if (e.key === '?') {
+                el.helpModal.classList.toggle('active');
+            }
+        });
+
+        // ========== UI EVENTS ==========
+        el.newNote.addEventListener('click', () => {
+            const x = (window.innerWidth / 2 - state.panX) / state.zoom;
+            const y = (window.innerHeight / 2 - state.panY) / state.zoom;
+            createNote(x, y);
+        });
+
+        el.searchBtn.addEventListener('click', () => {
+            el.searchBar.classList.toggle('active');
+            if (el.searchBar.classList.contains('active')) {
+                el.searchInput.focus();
+            }
+        });
+
+        el.searchInput.addEventListener('input', debouncedSearch);
+
+        el.undoBtn.addEventListener('click', undo);
+        el.redoBtn.addEventListener('click', redo);
+
+        el.helpBtn.addEventListener('click', () => {
+            el.helpModal.classList.add('active');
+        });
+
+        el.closeHelp.addEventListener('click', () => {
+            el.helpModal.classList.remove('active');
+        });
+
+        el.helpModal.addEventListener('click', (e) => {
+            if (e.target === el.helpModal) {
+                el.helpModal.classList.remove('active');
+            }
+        });
+
+        el.zoomIn.addEventListener('click', () => setZoom(state.zoom + 0.1));
+        el.zoomOut.addEventListener('click', () => setZoom(state.zoom - 0.1));
+        el.zoomReset.addEventListener('click', () => {
+            state.zoom = 1;
+            updateCanvas();
+        });
+
+        // Wheel zoom
+        el.viewport.addEventListener('wheel', (e) => {
+            if (!e.ctrlKey) return;
+            e.preventDefault();
+            
+            const delta = e.deltaY > 0 ? -0.05 : 0.05;
+            setZoom(state.zoom + delta);
+        }, { passive: false });
+
+        // ========== INIT ==========
+        window.addEventListener('load', () => {
+            const loaded = loadFromStorage();
+            
+            if (!loaded) {
+                // Center canvas
+                state.panX = 0;
+                state.panY = 0;
+                updateCanvas();
+                
+                // Show welcome
+                setTimeout(() => {
+                    el.helpModal.classList.add('active');
+                }, 500);
+            } else {
+                updateCanvas();
+            }
+        });
+
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', () => {
+            saveToStorage();
+        });
+
+        console.log('✨ Infinite Canvas Pro loaded');
+    </script>
+</body>
+</html>
